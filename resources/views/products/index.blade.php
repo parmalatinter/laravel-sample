@@ -29,3 +29,10 @@
     </div>
 
 @endsection
+@push('page_scripts')
+    <script>
+        $(document).ready(function () {
+            $('#products-table').DataTable();
+        });
+    </script>
+@endpush

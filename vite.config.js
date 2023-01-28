@@ -1,9 +1,14 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import vue from '@vitejs/plugin-vue';
+import webpack from "webpack";
 
 export default defineConfig({
     plugins: [
+        new webpack.ProvidePlugin({
+            $: "jquery",
+            jQuery: "jquery"
+        }),
         laravel({
             input: [
                 'resources/sass/app.scss',
@@ -28,4 +33,5 @@ export default defineConfig({
             replacement: '$1',
         },
     },
+
 });

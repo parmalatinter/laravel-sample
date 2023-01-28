@@ -6,7 +6,7 @@
                 <th>Name</th>
                 <th>Description</th>
                 <th>Price</th>
-                <th colspan="3">Action</th>
+                <th>Action</th>
             </tr>
             </thead>
             <tbody>
