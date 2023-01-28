@@ -64,3 +64,18 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## delete cache
+
+php artisan config:cache
+
+## migrate
+
+>php artisan migrate
+
+## seed
+
+$#全シーダーの実行
+$ php artisan db:seed
+$#特定のシーダーファイル実行
+$ php artisan db:seed --class=ItemTableSeeder
