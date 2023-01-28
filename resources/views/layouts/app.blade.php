@@ -17,7 +17,7 @@
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
-<div class="wrapper">
+<div id="app" class="wrapper">
     <!-- Main Header -->
     <nav class="main-header navbar navbar-expand navbar-white navbar-light">
         <!-- Left navbar links -->

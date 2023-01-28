@@ -27,7 +27,7 @@
             @include('products.table')
         </div>
     </div>
-
+    <example-component>
 @endsection
 @push('page_scripts')
     <script>
