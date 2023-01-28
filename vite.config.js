@@ -23,6 +23,9 @@ export default defineConfig({
     resolve: {
         alias: {
             vue: 'vue/dist/vue.esm-bundler.js',
+            // this is required for the SCSS modules
+            find: /^~(.*)$/,
+            replacement: '$1',
         },
     },
 });

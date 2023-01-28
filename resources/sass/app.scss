@@ -1,11 +1,5 @@
-// Fonts
-@import url('https://fonts.bunny.net/css?family=Nunito');
-
 // Variables
 @import 'variables';
 
 // Bootstrap
-@import 'bootstrap/scss/bootstrap';
-
-@import "~datatables.net-bs5/css/dataTables.bootstrap5.css";
-@import "~datatables.net-buttons-bs5/css/buttons.bootstrap5.css";
+@import '~admin-lte/build/scss/adminlte';

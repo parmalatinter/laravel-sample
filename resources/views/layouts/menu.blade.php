@@ -1,7 +1,7 @@
-
+<!-- need to remove -->
 <li class="nav-item">
-    <a href="{{ route('products.index') }}" class="nav-link {{ Request::is('products*') ? 'active' : '' }}">
+    <a href="{{ route('home') }}" class="nav-link {{ Request::is('home') ? 'active' : '' }}">
         <i class="nav-icon fas fa-home"></i>
-        <p>Products</p>
+        <p>Home</p>
     </a>
 </li>
