@@ -85,7 +85,6 @@ $#特定のシーダーファイル実行
 $ php artisan db:seed --class=ItemTableSeeder
 
 ## npm install & build
-old: npm install && npm run build
 npm install && npm run compile
 
 ## create route list
