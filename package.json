@@ -15,5 +15,9 @@
         "sass": "^1.56.1",
         "vite": "^4.0.0",
         "vue": "^3.2.37"
+    },
+    "dependencies": {
+        "datatables.net-bs5": "^1.13.1",
+        "datatables.net-buttons-bs5": "^2.3.3"
     }
 }

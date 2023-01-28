@@ -6,11 +6,17 @@
     "license": "MIT",
     "require": {
         "php": "^8.0.2",
+        "doctrine/dbal": "^3.5",
         "guzzlehttp/guzzle": "^7.2",
+        "infyomlabs/adminlte-templates": "^5.2",
+        "infyomlabs/laravel-generator": "^5.4",
+        "laracasts/flash": "^3.2",
         "laravel/framework": "^9.19",
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
-        "laravel/ui": "^4.2"
+        "laravel/ui": "^3.4.6",
+        "laravelcollective/html": "^6.3",
+        "yajra/laravel-datatables": "^9.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
