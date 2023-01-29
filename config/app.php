@@ -194,7 +194,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-
+        InfyOm\GeneratorBuilder\GeneratorBuilderServiceProvider::class,
     ],
 
     /*
@@ -212,4 +212,12 @@ return [
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
 
+    /**
+     * laravel generator
+     *
+     * https://infyom.com/open-source/laravelgenerator/docs/8.0/installation
+     */
+    'Form'      => Collective\Html\FormFacade::class,
+    'Html'      => Collective\Html\HtmlFacade::class,
+    'Flash'     => Laracasts\Flash\Flash::class,
 ];

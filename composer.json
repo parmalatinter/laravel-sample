@@ -16,7 +16,8 @@
         "laravel/tinker": "^2.7",
         "laravel/ui": "^3.4.6",
         "laravelcollective/html": "^6.3",
-        "yajra/laravel-datatables": "^9.0"
+        "yajra/laravel-datatables": "^9.0",
+        "infyomlabs/generator-builder": "^1.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

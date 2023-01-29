@@ -5,11 +5,11 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Products</h1>
+                    <h1 class="pull-left">Users</h1>
                 </div>
                 <div class="col-sm-6">
                     <a class="btn btn-primary float-right"
-                       href="{{ route('products.create') }}">
+                       href="{{ route('users.create') }}">
                         Add New
                     </a>
                 </div>
@@ -24,13 +24,15 @@
         <div class="clearfix"></div>
 
         <div class="card">
-            @include('products.table')
+            <div class="card-body p-0">
+                @include('users.table')
+
+                <div class="card-footer clearfix">
+                    <div class="float-right">
+                        @include('adminlte-templates::common.paginate', ['records' => $users])
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-
-    {{config('laravel_generator.path.routes')}}
-    <example-component>
 @endsection
-@push('page_scripts')
-    <script src="{{ mix('js/views/products.js') }}"></script>
-@endpush
