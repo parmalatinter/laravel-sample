@@ -67,25 +67,40 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 
 ## delete cache
 
-php artisan config:cache
+<pre>
+    php artisan config:cache
+</pre>
 
 ## delete cache and etc
 
-php artisan optimize
+<pre>
+    php artisan optimize
+</pre>
 
 ## migrate
 
->php artisan migrate
+<pre>
+    php artisan migrate
+</pre>
 
 ## seed
 
-$#全シーダーの実行
-$ php artisan db:seed
-$#特定のシーダーファイル実行
-$ php artisan db:seed --class=ItemTableSeeder
+# 全シーダーの実行
+
+<pre>
+    $ php artisan db:seed
+    $#特定のシーダーファイル実行
+    $ php artisan db:seed --class=ItemTableSeeder
+</pre>
 
 ## npm install & build
-npm install && npm run compile
+
+<pre>
+    npm install && npm run compile
+</pre>
 
 ## create route list
-php artisan route:list
+
+<pre>
+    php artisan route:list
+</pre>

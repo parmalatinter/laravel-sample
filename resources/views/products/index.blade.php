@@ -30,9 +30,5 @@
     <example-component>
 @endsection
 @push('page_scripts')
-    <script>
-        $(document).ready(function () {
-            $('#products-table').DataTable();
-        });
-    </script>
+    <script src="{{ mix('js/views/products.js') }}"></script>
 @endpush
