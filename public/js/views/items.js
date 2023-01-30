@@ -18003,10 +18003,34 @@ $(document).ready(function () {
       dataSrc: 'data'
     },
     "columns": [{
+      data: "id",
+      visible: false
+    }, {
       data: "name"
     }, {
       data: null,
-      defaultContent: '<button>Click!</button>'
+      "render": function render(data, type, full, meta) {
+        var $td = $('#items-table > tbody  td:nth-child(2)').eq(0).clone();
+        var btnClassList = ['.showBtn', '.editBtn'];
+        var formClassList = ['.deleteForm'];
+        for (var index in btnClassList) {
+          var btnClassName = btnClassList[index];
+          var $btn = $td.find(btnClassName);
+          var href = $btn.attr('href').replace('#id', data.id);
+          $btn.attr({
+            href: href
+          });
+        }
+        for (var _index in formClassList) {
+          var formClassName = formClassList[_index];
+          var $form = $td.find(formClassName);
+          var action = $form.attr('action').replace('#id', data.id);
+          $form.attr({
+            href: action
+          });
+        }
+        return $td.html();
+      }
     }],
     deferLoading: 57
   });

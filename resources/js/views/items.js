@@ -9,11 +9,36 @@ $(document).ready(function () {
             },
             "columns": [
                 {
-                    data: "name"
+                    data: "id",
+                    visible: false,
+                },
+                {
+                    data: "name",
                 },
                 {
                     data: null,
-                    defaultContent: '<button>Click!</button>',
+                    "render": function ( data, type, full, meta ) {
+                        let $td = $('#items-table > tbody  td:nth-child(2)').eq(0).clone();
+                        let btnClassList = ['.showBtn', '.editBtn'];
+                        let formClassList = ['.deleteForm'];
+                        for (const index in btnClassList) {
+                            let btnClassName = btnClassList[index];
+                            let $btn = $td.find(btnClassName);
+                            let href = $btn.attr('href').replace('#id', data.id);
+                            $btn.attr({
+                                href : href
+                            });
+                        }
+                        for (const index in formClassList) {
+                            let formClassName = formClassList[index];
+                            let $form = $td.find(formClassName);
+                            let action = $form.attr('action').replace('#id', data.id);
+                            $form.attr({
+                                href : action
+                            });
+                        }
+                        return $td.html();
+                    }
                 },
             ],
             deferLoading: 57,

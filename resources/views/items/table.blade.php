@@ -3,6 +3,7 @@
         <table class="table" id="items-table">
             <thead>
             <tr>
+                <th>Id</th>
                 <th>Name</th>
                 <th>Action</th>
             </tr>
@@ -10,15 +11,21 @@
             <tbody>
             @foreach($items as $item)
                 <tr>
+                    <td>{{ $item->id }}</td>
                     <td>{{ $item->name }}</td>
                     <td  style="width: 120px">
-                        {!! Form::open(['route' => ['items.destroy', $item->id], 'method' => 'delete']) !!}
+                        {!! Form::open([
+                                'route' => ['items.destroy', '#id'],
+                                'method' => 'delete',
+                                'class' => 'deleteForm'
+                            ])
+                        !!}
                         <div class='btn-group'>
-                            <a href="{{ route('items.show', [$item->id]) }}"
+                            <a class="showBtn" href="{{ route('items.show', ['#id']) }}"
                                class='btn btn-default btn-xs'>
                                 <i class="far fa-eye"></i>
                             </a>
-                            <a href="{{ route('items.edit', [$item->id]) }}"
+                            <a class="editBtn" href="{{ route('items.edit', ['#id']) }}"
                                class='btn btn-default btn-xs'>
                                 <i class="far fa-edit"></i>
                             </a>

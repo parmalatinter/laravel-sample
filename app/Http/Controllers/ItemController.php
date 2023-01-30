@@ -51,7 +51,7 @@ class ItemController extends AppBaseController
     public function show($id)
     {
         /** @var Item $item */
-        $item = Items::find($id);
+        $item = Item::find($id);
 
         if (empty($item)) {
             Flash::error('Item not found');
