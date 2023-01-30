@@ -17994,8 +17994,10 @@ var __webpack_exports__ = {};
   \*************************************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue_dist_vue_esm_bundler_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue/dist/vue.esm-bundler.js */ "./node_modules/vue/dist/vue.esm-bundler.js");
+// https://www.binaryboxtuts.com/php-tutorials/laravel-tutorials/laravel-8-crud-using-ajax-with-datatables-tutorial/
 $(document).ready(function () {
-  $('#items-table').DataTable({
+  var $table = $('#items-table');
+  $table.DataTable({
     processing: true,
     serverSide: true,
     ajax: {
@@ -18013,26 +18015,224 @@ $(document).ready(function () {
         var $td = $('#items-table > tbody  td:nth-child(2)').eq(0).clone();
         var btnClassList = ['.showBtn', '.editBtn'];
         var formClassList = ['.deleteForm'];
-        for (var index in btnClassList) {
-          var btnClassName = btnClassList[index];
-          var $btn = $td.find(btnClassName);
-          var href = $btn.attr('href').replace('#id', data.id);
-          $btn.attr({
-            href: href
-          });
-        }
-        for (var _index in formClassList) {
-          var formClassName = formClassList[_index];
-          var $form = $td.find(formClassName);
-          var action = $form.attr('action').replace('#id', data.id);
-          $form.attr({
-            href: action
-          });
-        }
+        // for (const index in btnClassList) {
+        //     let btnClassName = btnClassList[index];
+        //     let $btn = $td.find(btnClassName);
+        //     let href = $btn.attr('href').replace('#id', data.id);
+        //     $btn.attr({
+        //         href : href
+        //     });
+        // }
+        // for (const index in formClassList) {
+        //     let formClassName = formClassList[index];
+        //     let $form = $td.find(formClassName);
+        //     let action = $form.attr('action').replace('#id', data.id);
+        //     $form.attr({
+        //         href : action
+        //     });
+        // }
         return $td.html();
       }
     }],
     deferLoading: 57
+  });
+});
+function reloadTable() {
+  /*
+      reload the data on the datatable
+  */
+  $table.DataTable().ajax.reload();
+}
+
+/*
+    check if form submitted is for creating or updating
+*/
+$("#saveBtn").click(function (event) {
+  event.preventDefault();
+  if ($("#updateId").val() == null || $("#updateId").val() == "") {
+    storeProject();
+  } else {
+    updateProject();
+  }
+});
+
+/*
+    show modal for creating a record and
+    empty the values of form and remove existing alerts
+*/
+window.addNew = function () {
+  $("#alert-div").html("");
+  $("#error-div").html("");
+  $("#updateId").val("");
+  $("#name").val("");
+  $("#description").val("");
+  $("#form-modal").modal('show');
+};
+
+/*
+    submit the form and will be stored to the database
+*/
+function storeProject() {
+  $("#saveBtn").prop('disabled', true);
+  var url = $('meta[name=app-url]').attr("content") + "/projects";
+  var data = {
+    name: $("#name").val(),
+    description: $("#description").val()
+  };
+  $.ajax({
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    },
+    url: url,
+    type: "POST",
+    data: data,
+    success: function success(response) {
+      $("#saveBtn").prop('disabled', false);
+      var successHtml = '<div class="alert alert-success" role="alert"><b>Project Created Successfully</b></div>';
+      $("#alert-div").html(successHtml);
+      $("#name").val("");
+      $("#description").val("");
+      reloadTable();
+      $("#form-modal").modal('hide');
+    },
+    error: function error(response) {
+      $("#saveBtn").prop('disabled', false);
+      if (typeof response.responseJSON.errors !== 'undefined') {
+        var errors = response.responseJSON.errors;
+        var descriptionValidation = "";
+        if (typeof errors.description !== 'undefined') {
+          descriptionValidation = '<li>' + errors.description[0] + '</li>';
+        }
+        var nameValidation = "";
+        if (typeof errors.name !== 'undefined') {
+          nameValidation = '<li>' + errors.name[0] + '</li>';
+        }
+        var errorHtml = '<div class="alert alert-danger" role="alert">' + '<b>Validation Error!</b>' + '<ul>' + nameValidation + descriptionValidation + '</ul>' + '</div>';
+        $("#error-div").html(errorHtml);
+      }
+    }
+  });
+}
+
+/*
+    edit record function
+    it will get the existing value and show the project form
+*/
+$(document).on('click', '.editBtn', function () {
+  var id = 1;
+  var url = "/api/items/" + id + "";
+  $.ajax({
+    url: url,
+    type: "GET",
+    success: function success(response) {
+      var item = response.data;
+      $("#alert-div").html("");
+      $("#error-div").html("");
+      $("#updateId").val(item.id);
+      $("#name").val(item.name);
+      $("#form-modal").modal('show');
+    },
+    error: function error(response) {
+      console.log(response.responseJSON);
+    }
+  });
+});
+
+/*
+    sumbit the form and will update a record
+*/
+function updateProject() {
+  $("#saveBtn").prop('disabled', true);
+  var url = $('meta[name=app-url]').attr("content") + "/projects/" + $("#updateId").val();
+  var data = {
+    id: $("#updateId").val(),
+    name: $("#name").val(),
+    description: $("#description").val()
+  };
+  $.ajax({
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    },
+    url: url,
+    type: "PUT",
+    data: data,
+    success: function success(response) {
+      $("#saveBtn").prop('disabled', false);
+      var successHtml = '<div class="alert alert-success" role="alert"><b>Project Updated Successfully</b></div>';
+      $("#alert-div").html(successHtml);
+      $("#name").val("");
+      $("#description").val("");
+      reloadTable();
+      $("#form-modal").modal('hide');
+    },
+    error: function error(response) {
+      $("#saveBtn").prop('disabled', false);
+      if (typeof response.responseJSON.errors !== 'undefined') {
+        var errors = response.responseJSON.errors;
+        var descriptionValidation = "";
+        if (typeof errors.description !== 'undefined') {
+          descriptionValidation = '<li>' + errors.description[0] + '</li>';
+        }
+        var nameValidation = "";
+        if (typeof errors.name !== 'undefined') {
+          nameValidation = '<li>' + errors.name[0] + '</li>';
+        }
+        var errorHtml = '<div class="alert alert-danger" role="alert">' + '<b>Validation Error!</b>' + '<ul>' + nameValidation + descriptionValidation + '</ul>' + '</div>';
+        $("#error-div").html(errorHtml);
+      }
+    }
+  });
+}
+
+/*
+    get and display the record info on modal
+*/
+$(document).on('click', '.showBtn', function () {
+  $("#name-info").html("");
+  $("#description-info").html("");
+  var id = 1;
+  var url = "/api/items/" + id + "";
+  $.ajax({
+    url: url,
+    type: "GET",
+    success: function success(response) {
+      var item = response.data;
+      $("#name-info").html(item.name);
+      $("#view-modal").modal('show');
+    },
+    error: function error(response) {
+      console.log(response.responseJSON);
+    }
+  });
+});
+
+/*
+    delete record function
+*/
+$(document).on('click', '.destroyBtn', function () {
+  if (confirm("Are You sure want to delete !") === false) {
+    return;
+  }
+  var id = 1;
+  var url = "/api/items/" + id;
+  var data = {
+    name: $("#name").val()
+  };
+  $.ajax({
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    },
+    url: url,
+    type: "DELETE",
+    data: data,
+    success: function success(response) {
+      var successHtml = '<div class="alert alert-success" role="alert"><b>Project Deleted Successfully</b></div>';
+      $("#alert-div").html(successHtml);
+      reloadTable();
+    },
+    error: function error(response) {
+      console.log(response.responseJSON);
+    }
   });
 });
 

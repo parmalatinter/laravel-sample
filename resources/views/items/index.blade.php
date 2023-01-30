@@ -8,10 +8,10 @@
                     <h1>Items</h1>
                 </div>
                 <div class="col-sm-6">
-                    <a class="btn btn-primary float-right"
-                       href="{{ route('items.create') }}">
+                    <button class="btn btn-primary float-right"
+                       onclick="addNew()">
                         Add New
-                    </a>
+                    </button>
                 </div>
             </div>
         </div>

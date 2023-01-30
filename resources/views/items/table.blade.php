@@ -14,24 +14,18 @@
                     <td>{{ $item->id }}</td>
                     <td>{{ $item->name }}</td>
                     <td  style="width: 120px">
-                        {!! Form::open([
-                                'route' => ['items.destroy', '#id'],
-                                'method' => 'delete',
-                                'class' => 'deleteForm'
-                            ])
-                        !!}
+
                         <div class='btn-group'>
-                            <a class="showBtn" href="{{ route('items.show', ['#id']) }}"
-                               class='btn btn-default btn-xs'>
+                            <button class='showBtn btn btn-default btn-xs'>
                                 <i class="far fa-eye"></i>
-                            </a>
-                            <a class="editBtn" href="{{ route('items.edit', ['#id']) }}"
-                               class='btn btn-default btn-xs'>
+                            </button>
+                            <button class='editBtn btn btn-default btn-xs'>
                                 <i class="far fa-edit"></i>
-                            </a>
-                            {!! Form::button('<i class="far fa-trash-alt"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'onclick' => "return confirm('Are you sure?')"]) !!}
+                            </button>
+                            <button class='destroyBtn btn btn-danger btn-xs'>
+                                <i class="far fa-trash-alt"></i>
+                            </button>
                         </div>
-                        {!! Form::close() !!}
                     </td>
                 </tr>
             @endforeach
@@ -48,3 +42,42 @@
 @push('page_scripts')
     <script src="{{ mix('js/views/items.js') }}"></script>
 @endpush
+
+<!-- form modal -->
+<div class="modal" tabindex="-1" role="dialog" id="form-modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Form</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="error-div"></div>
+                <form>
+                    <input type="hidden" name="update_id" id="update_id">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" class="form-control" id="name" name="name">
+                    </div>
+                    <button type="submit" class="btn btn-outline-primary mt-3" id="saveBtn">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- view modal -->
+<div class="modal " tabindex="-1" role="dialog" id="view-modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Information</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <b>Name:</b>
+                <p id="name-info"></p>
+            </div>
+        </div>
+    </div>
+</div>
