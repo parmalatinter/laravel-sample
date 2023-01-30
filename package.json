@@ -4,6 +4,7 @@
         "dev": "vite",
         "build": "vite build",
         "test": "echo \"Error: no test specified\" && exit 1",
+        "mix" : "npx mix",
         "compile": "tilde-sass --file src/*.scss --outFile dist/ --mergeSelectors",
         "compile-min": "tilde-sass --file src/*.scss --outFile dist/ --mergeSelectors --outputStyle compressed",
         "compile-watch": "tilde-sass --file src/*.scss --outFile dist/ --mergeSelectors --outputStyle compressed --watch"
