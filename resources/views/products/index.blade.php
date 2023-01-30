@@ -27,10 +27,5 @@
             @include('products.table')
         </div>
     </div>
-
-    {{config('laravel_generator.path.routes')}}
     <example-component>
 @endsection
-@push('page_scripts')
-    <script src="{{ mix('js/views/products.js') }}"></script>
-@endpush

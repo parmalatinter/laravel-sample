@@ -42,3 +42,6 @@
         </div>
     </div>
 </div>
+@push('page_scripts')
+    <script src="{{ mix('js/views/products.js') }}"></script>
+@endpush
