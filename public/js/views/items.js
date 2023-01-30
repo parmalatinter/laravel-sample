@@ -17995,7 +17995,21 @@ var __webpack_exports__ = {};
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue_dist_vue_esm_bundler_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue/dist/vue.esm-bundler.js */ "./node_modules/vue/dist/vue.esm-bundler.js");
 $(document).ready(function () {
-  $('#products-table').DataTable();
+  $('#items-table').DataTable({
+    processing: true,
+    serverSide: true,
+    ajax: {
+      url: 'api/items',
+      dataSrc: 'data'
+    },
+    "columns": [{
+      data: "name"
+    }, {
+      data: null,
+      defaultContent: '<button>Click!</button>'
+    }],
+    deferLoading: 57
+  });
 });
 
 window.Vue = (0,vue_dist_vue_esm_bundler_js__WEBPACK_IMPORTED_MODULE_0__.createApp)();
