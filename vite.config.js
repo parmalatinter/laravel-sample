@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
-import vue from '@vitejs/plugin-vue';
+import vue from '@vitejs/plugin-vue2'
 import webpack from "webpack";
 
 export default defineConfig({
@@ -33,5 +33,18 @@ export default defineConfig({
             replacement: '$1',
         },
     },
-
+    test: /\.s(c|a)ss$/,
+    use: [
+        'vue-style-loader',
+        'css-loader',
+        {
+            loader: 'sass-loader',
+            options: {
+                implementation: require('sass'),
+                sassOptions: {
+                    indentedSyntax: true // optional
+                },
+            },
+        },
+    ],
 });

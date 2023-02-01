@@ -27,5 +27,9 @@
             @include('items.table')
         </div>
     </div>
-    <example-component>
+    <example-component></example-component>
+    <v-btn>
+        Button
+    </v-btn>
+    <v-color-picker></v-color-picker>
 @endsection
