@@ -49,46 +49,6 @@
                                             label="Dessert name"
                                         ></v-text-field>
                                     </v-col>
-                                    <v-col
-                                        cols="12"
-                                        sm="6"
-                                        md="4"
-                                    >
-                                        <v-text-field
-                                            v-model="editedItem.calories"
-                                            label="Calories"
-                                        ></v-text-field>
-                                    </v-col>
-                                    <v-col
-                                        cols="12"
-                                        sm="6"
-                                        md="4"
-                                    >
-                                        <v-text-field
-                                            v-model="editedItem.fat"
-                                            label="Fat (g)"
-                                        ></v-text-field>
-                                    </v-col>
-                                    <v-col
-                                        cols="12"
-                                        sm="6"
-                                        md="4"
-                                    >
-                                        <v-text-field
-                                            v-model="editedItem.carbs"
-                                            label="Carbs (g)"
-                                        ></v-text-field>
-                                    </v-col>
-                                    <v-col
-                                        cols="12"
-                                        sm="6"
-                                        md="4"
-                                    >
-                                        <v-text-field
-                                            v-model="editedItem.protein"
-                                            label="Protein (g)"
-                                        ></v-text-field>
-                                    </v-col>
                                 </v-row>
                             </v-container>
                         </v-card-text>
@@ -294,6 +254,41 @@ export default {
                     console.log(error)
             })
         },
+        saveItem(item) {
+            /* this is used for both creating and updating API records
+             the default method is POST for creating a new item */
+
+            let method = "post"
+            let url = `api/items`
+            let id = item.id
+
+            // airtable API needs the data to be placed in fields object
+
+            if (id) {
+                // if the item has an id, we're updating an existing item
+                method = "patch"
+                url = `api/items/${id}`
+            }
+
+            // save the record
+            axios[method](url,
+                item,
+                { headers: { Authorization: "Bearer " + csrfToken }}
+                ).then((response) => {
+                    if (response.data) {
+                        // add new item to state
+                        this.editedItem = response.data.data
+                        if (!id) {
+                            // add the new item to items state
+                            this.items.push(this.editedItem)
+                        }else{
+                            Object.assign(this.items[this.editedIndex], this.editedItem)
+                        }
+                        this.editedItem = {}
+                    }
+                    this.close()
+            })
+        },
         editItem (item) {
             this.editedIndex = this.items.indexOf(item)
             this.editedItem = Object.assign({}, item)
@@ -323,12 +318,7 @@ export default {
             })
         },
         save () {
-            if (this.editedIndex > -1) {
-                Object.assign(this.items[this.editedIndex], this.editedItem)
-            } else {
-                this.items.push(this.editedItem)
-            }
-            this.close()
+            this.saveItem(this.editedItem)
         },
     },
 }

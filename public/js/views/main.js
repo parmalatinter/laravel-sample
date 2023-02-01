@@ -196,6 +196,43 @@ var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('
         console.log(error);
       });
     },
+    saveItem: function saveItem(item) {
+      var _this2 = this;
+      /* this is used for both creating and updating API records
+       the default method is POST for creating a new item */
+
+      var method = "post";
+      var url = "api/items";
+      var id = item.id;
+
+      // airtable API needs the data to be placed in fields object
+
+      if (id) {
+        // if the item has an id, we're updating an existing item
+        method = "patch";
+        url = "api/items/".concat(id);
+      }
+
+      // save the record
+      axios__WEBPACK_IMPORTED_MODULE_0__["default"][method](url, item, {
+        headers: {
+          Authorization: "Bearer " + csrfToken
+        }
+      }).then(function (response) {
+        if (response.data) {
+          // add new item to state
+          _this2.editedItem = response.data.data;
+          if (!id) {
+            // add the new item to items state
+            _this2.items.push(_this2.editedItem);
+          } else {
+            Object.assign(_this2.items[_this2.editedIndex], _this2.editedItem);
+          }
+          _this2.editedItem = {};
+        }
+        _this2.close();
+      });
+    },
     editItem: function editItem(item) {
       this.editedIndex = this.items.indexOf(item);
       this.editedItem = Object.assign({}, item);
@@ -211,28 +248,23 @@ var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('
       this.closeDelete();
     },
     close: function close() {
-      var _this2 = this;
-      this.dialog = false;
-      this.$nextTick(function () {
-        _this2.editedItem = Object.assign({}, _this2.defaultItem);
-        _this2.editedIndex = -1;
-      });
-    },
-    closeDelete: function closeDelete() {
       var _this3 = this;
-      this.dialogDelete = false;
+      this.dialog = false;
       this.$nextTick(function () {
         _this3.editedItem = Object.assign({}, _this3.defaultItem);
         _this3.editedIndex = -1;
       });
     },
+    closeDelete: function closeDelete() {
+      var _this4 = this;
+      this.dialogDelete = false;
+      this.$nextTick(function () {
+        _this4.editedItem = Object.assign({}, _this4.defaultItem);
+        _this4.editedIndex = -1;
+      });
+    },
     save: function save() {
-      if (this.editedIndex > -1) {
-        Object.assign(this.items[this.editedIndex], this.editedItem);
-      } else {
-        this.items.push(this.editedItem);
-      }
-      this.close();
+      this.saveItem(this.editedItem);
     }
   }
 });
@@ -395,74 +427,6 @@ var render = function render() {
               _vm.$set(_vm.editedItem, "name", $$v);
             },
             expression: "editedItem.name"
-          }
-        })], 1), _vm._v(" "), _c("v-col", {
-          attrs: {
-            cols: "12",
-            sm: "6",
-            md: "4"
-          }
-        }, [_c("v-text-field", {
-          attrs: {
-            label: "Calories"
-          },
-          model: {
-            value: _vm.editedItem.calories,
-            callback: function callback($$v) {
-              _vm.$set(_vm.editedItem, "calories", $$v);
-            },
-            expression: "editedItem.calories"
-          }
-        })], 1), _vm._v(" "), _c("v-col", {
-          attrs: {
-            cols: "12",
-            sm: "6",
-            md: "4"
-          }
-        }, [_c("v-text-field", {
-          attrs: {
-            label: "Fat (g)"
-          },
-          model: {
-            value: _vm.editedItem.fat,
-            callback: function callback($$v) {
-              _vm.$set(_vm.editedItem, "fat", $$v);
-            },
-            expression: "editedItem.fat"
-          }
-        })], 1), _vm._v(" "), _c("v-col", {
-          attrs: {
-            cols: "12",
-            sm: "6",
-            md: "4"
-          }
-        }, [_c("v-text-field", {
-          attrs: {
-            label: "Carbs (g)"
-          },
-          model: {
-            value: _vm.editedItem.carbs,
-            callback: function callback($$v) {
-              _vm.$set(_vm.editedItem, "carbs", $$v);
-            },
-            expression: "editedItem.carbs"
-          }
-        })], 1), _vm._v(" "), _c("v-col", {
-          attrs: {
-            cols: "12",
-            sm: "6",
-            md: "4"
-          }
-        }, [_c("v-text-field", {
-          attrs: {
-            label: "Protein (g)"
-          },
-          model: {
-            value: _vm.editedItem.protein,
-            callback: function callback($$v) {
-              _vm.$set(_vm.editedItem, "protein", $$v);
-            },
-            expression: "editedItem.protein"
           }
         })], 1)], 1)], 1)], 1), _vm._v(" "), _c("v-card-actions", [_c("v-spacer"), _vm._v(" "), _c("v-btn", {
           attrs: {
