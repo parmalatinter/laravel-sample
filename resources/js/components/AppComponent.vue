@@ -5,14 +5,15 @@
             dense
             elevation="4"
         >
-            <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+            <v-app-bar-nav-icon variant="text" @click.stop="miniVariant = !miniVariant"></v-app-bar-nav-icon>
             <v-toolbar-title>Vuetify</v-toolbar-title>
         </v-app-bar>
 
         <v-layout fill-height>
         <v-navigation-drawer
+            v-model="drawer"
             permanent
-            expand-on-hover
+            :mini-variant.sync="miniVariant"
         >
             <v-list>
                 <v-list-item class="px-2">
@@ -37,23 +38,17 @@
                 nav
                 dense
             >
-                <v-list-item link>
+                <v-list-item
+                    link
+                    exact
+                    v-for="(item, i) in items"
+                    :key=i
+                    :to=item.to
+                >
                     <v-list-item-icon>
-                        <v-icon>mdi-folder</v-icon>
+                        <v-icon>{{ item.icon }}</v-icon>
                     </v-list-item-icon>
-                    <v-list-item-title>My Files</v-list-item-title>
-                </v-list-item>
-                <v-list-item link>
-                    <v-list-item-icon>
-                        <v-icon>mdi-account-multiple</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-title>Shared with me</v-list-item-title>
-                </v-list-item>
-                <v-list-item link>
-                    <v-list-item-icon>
-                        <v-icon>mdi-star</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-title>Starred</v-list-item-title>
+                    <v-list-item-title v-text="item.title"></v-list-item-title>
                 </v-list-item>
             </v-list>
         </v-navigation-drawer>
@@ -85,25 +80,31 @@
     </v-app>
 </template>
 
-<script setup>
-import { ref } from 'vue'
+<script>
 
-const drawer = ref(null)
-const items = [
-    {
-        title: 'Home',
-        to: '/',
-    },
-    {
-        title: 'About',
-        to: '/about',
-    },
-    {
-        title: 'Datatables',
-        to: '/datatables',
-    },
-]
-
+export default {
+    data: () => ({
+        drawer: true,
+        miniVariant: true,
+        items : [
+            {
+                title: 'Home',
+                to: '/',
+                icon: 'mdi-home'
+            },
+            {
+                title: 'About',
+                to: '/about',
+                icon: 'mdi-text-box-edit'
+            },
+            {
+                title: 'Datatables',
+                to: '/datatables',
+                icon: 'mdi-table'
+            },
+        ]
+    }),
+}
 </script>
 
 <style scoped>
