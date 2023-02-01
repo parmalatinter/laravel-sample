@@ -72,6 +72,9 @@ var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('
         value: 'actions',
         sortable: false
       }],
+      page: 1,
+      totalRowCount: 0,
+      limit: 10,
       items: [],
       editedIndex: -1,
       editedItem: {
@@ -88,10 +91,11 @@ var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('
         // fat: 0,
         // carbs: 0,
         // protein: 0,
-      }
+      },
+
+      options: {}
     };
   },
-
   computed: {
     formTitle: function formTitle() {
       return this.editedIndex === -1 ? 'New Item' : 'Edit Item';
@@ -102,8 +106,15 @@ var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('
       val || this.close();
     },
     dialogDelete: function dialogDelete(val) {
-      val || this.closeDelete();
-    }
+      val || this.close();
+    },
+    options: {
+      handler: function handler() {
+        this.loadItems();
+      },
+      deep: true
+    },
+    deep: true
   },
   created: function created() {
     this.loadItems();
@@ -186,12 +197,17 @@ var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('
     loadItems: function loadItems() {
       var _this = this;
       this.items = [];
-      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("api/items", {
+      var _this$options = this.options,
+        page = _this$options.page,
+        itemsPerPage = _this$options.itemsPerPage;
+      var skip = (page - 1) * itemsPerPage;
+      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("api/items?skip=".concat(skip, "&limit=").concat(itemsPerPage), {
         headers: {
           Authorization: "Bearer " + csrfToken
         }
       }).then(function (response) {
-        _this.items = response.data.data;
+        _this.totalRowCount = response.data.data.totalRowCount;
+        _this.items = response.data.data.rows;
       })["catch"](function (error) {
         console.log(error);
       });
@@ -244,7 +260,6 @@ var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('
       this.dialogDelete = true;
     },
     deleteItemConfirm: function deleteItemConfirm() {
-      this.items.splice(this.editedIndex, 1);
       this.closeDelete();
     },
     close: function close() {
@@ -258,9 +273,20 @@ var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('
     closeDelete: function closeDelete() {
       var _this4 = this;
       this.dialogDelete = false;
+      var method = "delete";
       this.$nextTick(function () {
-        _this4.editedItem = Object.assign({}, _this4.defaultItem);
-        _this4.editedIndex = -1;
+        var id = _this4.editedItem.id;
+        var url = "api/items/".concat(id);
+        axios__WEBPACK_IMPORTED_MODULE_0__["default"][method](url, {
+          headers: {
+            Authorization: "Bearer " + csrfToken,
+            "Content-Type": "application/json"
+          }
+        }).then(function (response) {
+          _this4.items.splice(_this4.editedIndex, 1);
+          _this4.editedItem = Object.assign({}, _this4.defaultItem);
+          _this4.editedIndex = -1;
+        });
       });
     },
     save: function save() {
@@ -367,9 +393,17 @@ var render = function render() {
   return _c("v-data-table", {
     staticClass: "elevation-1",
     attrs: {
+      page: _vm.page,
       headers: _vm.headers,
       items: _vm.items,
-      "sort-by": "calories"
+      "sort-by": "name",
+      "server-items-length": _vm.totalRowCount,
+      options: _vm.options
+    },
+    on: {
+      "update:options": function updateOptions($event) {
+        _vm.options = $event;
+      }
     },
     scopedSlots: _vm._u([{
       key: "top",

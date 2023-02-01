@@ -49,6 +49,7 @@ class ItemAPIController extends AppBaseController
     public function index(Request $request): JsonResponse
     {
         $query = Item::query();
+        $totalRowCount = Item::query()->count();
 
         if ($request->get('skip')) {
             $query->skip($request->get('skip'));
@@ -59,7 +60,10 @@ class ItemAPIController extends AppBaseController
 
         $items = $query->get();
 
-        return $this->sendResponse($items->toArray(), 'Items retrieved successfully');
+        return $this->sendResponse([
+                'rows' => $items->toArray(),
+                'totalRowCount' => $totalRowCount
+            ], 'Items retrieved successfully');
     }
 
     /**

@@ -1,9 +1,12 @@
 <template>
     <v-data-table
+        :page="page"
         :headers="headers"
         :items="items"
-        sort-by="calories"
+        sort-by="name"
+        :server-items-length="totalRowCount"
         class="elevation-1"
+        :options.sync="options"
     >
         <template v-slot:top>
             <v-toolbar
@@ -133,6 +136,9 @@ export default {
             // { text: 'Protein (g)', value: 'protein' },
             { text: 'Actions', value: 'actions', sortable: false },
         ],
+        page: 1,
+        totalRowCount: 0,
+        limit: 10,
         items: [],
         editedIndex: -1,
         editedItem: {
@@ -149,6 +155,7 @@ export default {
             // carbs: 0,
             // protein: 0,
         },
+        options: {},
     }),
     computed: {
         formTitle () {
@@ -160,9 +167,17 @@ export default {
             val || this.close()
         },
         dialogDelete (val) {
-            val || this.closeDelete()
+            val || this.close()
         },
+        options: {
+            handler() {
+                this.loadItems();
+            },
+            deep: true
+        },
+        deep: true,
     },
+
     created () {
         this.loadItems()
     },
@@ -243,12 +258,15 @@ export default {
         },
         loadItems() {
             this.items = []
+            const { page, itemsPerPage } = this.options;
+            const skip = (page-1) * itemsPerPage
             axios.get(
-                `api/items`,
+                `api/items?skip=${skip}&limit=${itemsPerPage}`,
                 { headers: { Authorization: "Bearer " + csrfToken }}
                 )
                 .then((response) => {
-                    this.items = response.data.data
+                    this.totalRowCount = response.data.data.totalRowCount
+                    this.items = response.data.data.rows
                 })
                 .catch((error) => {
                     console.log(error)
@@ -300,7 +318,6 @@ export default {
             this.dialogDelete = true
         },
         deleteItemConfirm () {
-            this.items.splice(this.editedIndex, 1)
             this.closeDelete()
         },
         close () {
@@ -312,9 +329,22 @@ export default {
         },
         closeDelete () {
             this.dialogDelete = false
+            let method = "delete"
             this.$nextTick(() => {
-                this.editedItem = Object.assign({}, this.defaultItem)
-                this.editedIndex = -1
+
+                const id = this.editedItem.id
+                const url = `api/items/${id}`
+
+                axios[method](url,
+                    { headers: {
+                        Authorization: "Bearer " + csrfToken,
+                        "Content-Type": "application/json"
+                    }
+                }).then((response) => {
+                    this.items.splice(this.editedIndex, 1)
+                    this.editedItem = Object.assign({}, this.defaultItem)
+                    this.editedIndex = -1
+                })
             })
         },
         save () {
