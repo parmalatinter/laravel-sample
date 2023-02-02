@@ -101,8 +101,7 @@ __webpack_require__.r(__webpack_exports__);
         this.loadItems();
       },
       deep: true
-    },
-    deep: true
+    }
   },
   created: function created() {
     this.loadItems();

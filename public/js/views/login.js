@@ -13,24 +13,60 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  mounted: function mounted() {
+    switch (window.params.action) {
+      case 'register':
+        this.uri = window.routes.register.uri;
+        this.title = 'Register Form';
+        this.faildMessage = 'Register Failed';
+        this.btnTitle = 'Register';
+        break;
+      case 'login':
+        this.uri = window.routes.login.uri;
+        this.title = 'Login Form';
+        this.failedMessage = 'Login Failed';
+        this.btnTitle = 'Login';
+        break;
+      case 'passwordReset':
+        this.uri = window.routes.passwordRequest.uri;
+        this.title = 'Reset Password';
+        this.failedMessage = 'Reset Password Failed';
+        this.btnTitle = 'Reset Password';
+        this.explainMessage = 'You are only one step a way from your new password, recover your password now.';
+        break;
+    }
+  },
   data: function data() {
     return {
       routes: window.routes,
+      uri: '',
+      title: '',
+      btnTitle: '',
+      failedMessage: '',
+      explainMessage: '',
       csrfToken: window.csrfToken,
       olds: window.olds,
+      params: window.params,
       valid: true,
+      name: window.olds ? window.olds.name : '',
+      nameRules: [function (v) {
+        return !!v || 'Name is required';
+      }, function (v) {
+        return v && v.length <= 10 || 'Name must be less than 10 characters';
+      }],
       email: window.olds ? window.olds.email : '',
       emailRules: [function (v) {
         return !!v || 'Email is required';
       }, function (v) {
-        return v && v.length <= 10 || 'Name must be less than 10 characters';
+        return v && v.length <= 30 || 'Name must be less than 30 characters';
       }],
       password: '',
       passwordRules: [function (v) {
-        return !!v || 'Email is required';
+        return !!v || 'Password is required';
       }, function (v) {
         return v && v.length <= 10 || 'Name must be less than 10 characters';
-      }]
+      }],
+      isRegister: true
     };
   },
   props: {
@@ -93,11 +129,11 @@ var render = function render() {
       dark: "",
       color: "primary"
     }
-  }, [_c("v-toolbar-title", [_vm._v("Login form")])], 1), _vm._v(" "), _c("v-form", {
+  }, [_c("v-toolbar-title", [_vm._v(_vm._s(_vm.title))])], 1), _vm._v(" "), _c("v-form", {
     ref: "form",
     attrs: {
       "lazy-validation": "",
-      action: _vm.routes.login.uri,
+      action: _vm.uri,
       method: "post"
     },
     model: {
@@ -109,7 +145,7 @@ var render = function render() {
     }
   }, [_c("v-card-text", [!!_vm.olds.email ? _c("v-item", [_c("p", {
     staticClass: "red--text"
-  }, [_vm._v("Login Failed")])]) : _vm._e(), _vm._v(" "), _c("v-text-field", {
+  }, [_vm._v(_vm._s(_vm.failedMessage))])]) : _vm._e(), _vm._v(" "), _vm.explainMessage ? _c("v-item", [_c("p", [_vm._v(_vm._s(_vm.explainMessage))])]) : _vm._e(), _vm._v(" "), _c("v-text-field", {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -120,14 +156,32 @@ var render = function render() {
       name: "_token",
       value: _vm.csrfToken
     }
-  }), _vm._v(" "), _c("v-text-field", {
+  }), _vm._v(" "), _vm.isRegister && _vm.params.action !== "passwordReset" && _vm.params.action !== "login" ? _c("v-text-field", {
+    attrs: {
+      "prepend-icon": "mdi-account",
+      name: "name",
+      label: "Name",
+      type: "text",
+      value: _vm.olds.name,
+      counter: 10,
+      rules: _vm.nameRules,
+      required: ""
+    },
+    model: {
+      value: _vm.name,
+      callback: function callback($$v) {
+        _vm.name = $$v;
+      },
+      expression: "name"
+    }
+  }) : _vm._e(), _vm._v(" "), _c("v-text-field", {
     attrs: {
       "prepend-icon": "mdi-email",
       name: "email",
       label: "Email",
       type: "text",
       value: _vm.olds.email,
-      counter: 10,
+      counter: 30,
       rules: _vm.emailRules,
       required: ""
     },
@@ -138,7 +192,7 @@ var render = function render() {
       },
       expression: "email"
     }
-  }), _vm._v(" "), _c("v-text-field", {
+  }), _vm._v(" "), _vm.params.action !== "passwordReset" ? _c("v-text-field", {
     attrs: {
       id: "password",
       "prepend-icon": "mdi-lock",
@@ -156,13 +210,13 @@ var render = function render() {
       },
       expression: "password"
     }
-  }), _vm._v(" "), _c("v-checkbox", {
+  }) : _vm._e(), _vm._v(" "), _vm.params.action === "login" ? _c("v-checkbox", {
     attrs: {
       name: "remember",
       label: "Remember Me",
       value: "1"
     }
-  }), _vm._v(" "), _c("p", [_c("a", {
+  }) : _vm._e(), _vm._v(" "), _vm.params.action === "login" ? _c("v-spacer", [_c("p", [_c("a", {
     staticClass: "text-decoration-none",
     attrs: {
       href: _vm.routes.passwordRequest.uri
@@ -172,7 +226,7 @@ var render = function render() {
     attrs: {
       href: _vm.routes.register.uri
     }
-  }, [_vm._v("Register a new membership")])])], 1), _vm._v(" "), _c("v-card-actions", [_c("v-spacer"), _vm._v(" "), _c("v-btn", {
+  }, [_vm._v("Register a new membership")])])]) : _vm._e()], 1), _vm._v(" "), _c("v-card-actions", [_c("v-spacer"), _vm._v(" "), _c("v-btn", {
     attrs: {
       disabled: !_vm.valid,
       type: "submit",
@@ -181,7 +235,7 @@ var render = function render() {
     on: {
       click: _vm.validate
     }
-  }, [_vm._v("\n                                    Login\n                                ")])], 1)], 1)], 1)], 1)], 1)], 1)], 1)], 1);
+  }, [_vm._v("\n                                    " + _vm._s(_vm.btnTitle) + "\n                                ")])], 1)], 1)], 1)], 1)], 1)], 1)], 1)], 1);
 };
 var staticRenderFns = [];
 render._withStripped = true;

@@ -159,7 +159,6 @@ export default {
             },
             deep: true
         },
-        deep: true,
     },
 
     created () {

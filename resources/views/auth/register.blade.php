@@ -16,6 +16,7 @@
 
 </head>
 <body class="hold-transition register-page">
+<div id="appLogin"></div>
 <div class="register-box">
     <div class="register-logo">
         <a href="{{ url('/home') }}"><b>{{ config('app.name') }}</b></a>
@@ -111,7 +112,37 @@
 </div>
 <!-- /.register-box -->
 
-<script src="{{ mix('js/app.js') }}" defer></script>
+<!-- /.login-box -->
+<script type="application/json" name="olds">
+    @json(session()->getOldInput())
+</script>
+<script type="application/json" name="errors">
+    @json($errors)
+</script>
 
+<script>
+    const oldsJson = document.getElementsByName("olds")[0].innerHTML;
+    const errorsJson = document.getElementsByName("errors")[0].innerHTML;
+    window.olds = JSON.parse(oldsJson);
+    window.errors = JSON.parse(errorsJson);
+    window.routes = {
+        login : {
+            uri : '{{ route('login')}}'
+        },
+        passwordRequest : {
+            uri : '{{ route('password.request')}}'
+        },
+        register : {
+            uri : '{{ route('register')}}'
+        }
+    }
+    window.params = {
+        action : 'register'
+    }
+    window.csrfToken = '{{ csrf_token() }}';
+</script>
+
+<script src="{{ mix('js/app.js') }}"></script>
+<script src="{{ mix('js/views/login.js') }}"></script>
 </body>
 </html>

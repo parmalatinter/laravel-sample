@@ -113,6 +113,9 @@
             uri : '{{ route('register')}}'
         }
     }
+    window.params = {
+        action : 'login'
+    }
     window.csrfToken = '{{ csrf_token() }}';
 </script>
 
