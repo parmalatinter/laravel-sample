@@ -88,9 +88,12 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 # 全シーダーの実行
 
 <pre>
+    # 全シーダーファイル実行
     $ php artisan db:seed
-    $#特定のシーダーファイル実行
+    # 特定のシーダーファイル実行
     $ php artisan db:seed --class=ItemTableSeeder
+    # 全migration & 全シーダーファイル実行
+    $ php artisan migrate:refresh --seed
 </pre>
 
 ## npm install & build

@@ -10,6 +10,11 @@
             <v-spacer></v-spacer>
             <v-menu
                 offset-y
+                offset-x
+                left
+                min-width="100px"
+                nudge-top="-20px"
+                nudge-right="40px"
             >
                 <template v-slot:activator="{ on, attrs }">
                     <v-btn
@@ -71,9 +76,9 @@
                 <v-list-item link>
                     <v-list-item-content>
                         <v-list-item-title>
-                            Sandra Adams
+                            {{ user.name }}
                         </v-list-item-title>
-                        <v-list-item-subtitle>sandra_a88@gmail.com</v-list-item-subtitle>
+                        <v-list-item-subtitle>{{ user.email }}</v-list-item-subtitle>
                     </v-list-item-content>
                 </v-list-item>
             </v-list>
@@ -161,6 +166,7 @@
 export default {
     data: () => ({
         routes : window.routes,
+        user : window.user,
         snackbar: true,
         csrfToken: window.csrfToken,
         text: `You are logged in !`,
@@ -173,9 +179,9 @@ export default {
                 icon: 'mdi-home'
             },
             {
-                title: 'About',
-                to: '/about',
-                icon: 'mdi-text-box-edit'
+                title: 'Account Setting',
+                to: '/account',
+                icon: 'mdi-account-cog'
             },
             {
                 title: 'Datatables',

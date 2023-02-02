@@ -85,7 +85,10 @@
 {{--        reserved.--}}
 {{--    </footer>--}}
 {{--</div>--}}
-
+@php
+    use Illuminate\Support\Facades\Auth;
+    $user = Auth::user();
+@endphp
 <script type="application/json" name="routes">
     @json($routes)
 </script>
@@ -95,14 +98,20 @@
 <script type="application/json" name="errors">
     @json($errors)
 </script>
+<script type="application/json" name="user">
+    @json($user)
+</script>
 <script>
     const routesJson = document.getElementsByName("routes")[0].innerHTML;
     const oldsJson = document.getElementsByName("olds")[0].innerHTML;
     const errorsJson = document.getElementsByName("errors")[0].innerHTML;
+    const userJson = document.getElementsByName("user")[0].innerHTML;
     window.routes = JSON.parse(routesJson);
     window.olds = JSON.parse(oldsJson);
     window.errors = JSON.parse(errorsJson);
+    window.user = JSON.parse(userJson);
     window.csrfToken = '{{ csrf_token() }}';
+
 </script>
 <script src="{{ mix('js/app.js') }}"></script>
 <script src="{{ mix('js/views/main.js') }}"></script>

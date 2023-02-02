@@ -14,16 +14,19 @@ class ItemSeeder extends Seeder
      */
     public function run()
     {
-        Item::create([
-            'name' => 'リンゴ',
-        ]);
+        foreach (range(0, 25) as $number) {
+            Item::create([
+                'name' => "リンゴ{$number}",
+            ]);
 
-        Item::create([
-            'name' => 'ぶどう',
-        ]);
+            Item::create([
+                'name' => "ぶどう{$number}",
+            ]);
 
-        Item::create([
-            'name' => 'みかん',
-        ]);
+            Item::create([
+                'name' => "みかん{$number}",
+            ]);
+        }
+
     }
 }
