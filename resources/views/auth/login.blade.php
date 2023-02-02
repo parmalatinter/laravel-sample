@@ -90,8 +90,18 @@
 
 </div>
 <!-- /.login-box -->
+<script type="application/json" name="olds">
+    @json(session()->getOldInput())
+</script>
+<script type="application/json" name="errors">
+    @json($errors)
+</script>
 
 <script>
+    const oldsJson = document.getElementsByName("olds")[0].innerHTML;
+    const errorsJson = document.getElementsByName("errors")[0].innerHTML;
+    window.olds = JSON.parse(oldsJson);
+    window.errors = JSON.parse(errorsJson);
     window.routes = {
         login : {
             uri : '{{ route('login')}}'

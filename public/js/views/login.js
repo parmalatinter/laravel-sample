@@ -17,6 +17,7 @@ __webpack_require__.r(__webpack_exports__);
     return {
       routes: window.routes,
       csrfToken: window.csrfToken,
+      olds: window.olds,
       name: 'Login'
     };
   },
@@ -74,18 +75,26 @@ var render = function render() {
       action: _vm.routes.login.uri,
       method: "post"
     }
-  }, [_c("v-card-text", [_c("v-text-field", {
+  }, [_c("v-card-text", [!!_vm.olds.email ? _c("v-item", [_c("p", {
+    staticClass: "red--text"
+  }, [_vm._v("Login Failed")])]) : _vm._e(), _vm._v(" "), _c("v-text-field", {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: false,
+      expression: "false"
+    }],
     attrs: {
       name: "_token",
-      value: _vm.csrfToken,
-      type: "hidden"
+      value: _vm.csrfToken
     }
   }), _vm._v(" "), _c("v-text-field", {
     attrs: {
       "prepend-icon": "mdi-email",
       name: "email",
       label: "Email",
-      type: "text"
+      type: "text",
+      value: _vm.olds.email
     }
   }), _vm._v(" "), _c("v-text-field", {
     attrs: {

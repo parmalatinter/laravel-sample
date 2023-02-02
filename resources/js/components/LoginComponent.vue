@@ -10,16 +10,20 @@
                             </v-toolbar>
                             <form :action="routes.login.uri" method="post" >
                                 <v-card-text>
+                                    <v-item v-if="!!olds.email">
+                                        <p class="red--text">Login Failed</p>
+                                    </v-item>
                                     <v-text-field
                                         name="_token"
                                         :value="csrfToken"
-                                        type="hidden"
+                                        v-show="false"
                                     ></v-text-field>
                                     <v-text-field
                                         prepend-icon="mdi-email"
                                         name="email"
                                         label="Email"
                                         type="text"
+                                        :value="olds.email"
                                     ></v-text-field>
                                     <v-text-field
                                         id="password"
@@ -58,6 +62,7 @@
         data: () => ({
             routes : window.routes,
             csrfToken: window.csrfToken,
+            olds: window.olds,
             name: 'Login',
         }),
         props: {

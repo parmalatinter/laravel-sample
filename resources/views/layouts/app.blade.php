@@ -89,9 +89,19 @@
 <script type="application/json" name="routes">
     @json($routes)
 </script>
+<script type="application/json" name="olds">
+    @json(session()->getOldInput())
+</script>
+<script type="application/json" name="errors">
+    @json($errors)
+</script>
 <script>
-    const routesJson = document.getElementsByName("routes")[0].innerhtml;
+    const routesJson = document.getElementsByName("routes")[0].innerHTML;
+    const oldsJson = document.getElementsByName("olds")[0].innerHTML;
+    const errorsJson = document.getElementsByName("errors")[0].innerHTML;
     window.routes = JSON.parse(routesJson);
+    window.olds = JSON.parse(oldsJson);
+    window.errors = JSON.parse(errorsJson);
     window.csrfToken = '{{ csrf_token() }}';
 </script>
 <script src="{{ mix('js/app.js') }}"></script>
