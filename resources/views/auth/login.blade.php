@@ -16,7 +16,9 @@
 
 </head>
 <body class="hold-transition login-page">
+<div id="appLogin"></div>
 <div class="login-box">
+
     <div class="login-logo">
         <a href="{{ url('/home') }}"><b>{{ config('app.name') }}</b></a>
     </div>
@@ -89,6 +91,7 @@
 <!-- /.login-box -->
 
 <script src="{{ mix('js/app.js') }}"></script>
+<script src="{{ mix('js/views/login.js') }}"></script>
 
 </body>
 </html>

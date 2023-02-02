@@ -30,7 +30,7 @@
 
 import Vue from 'vue'
 import Vuetify from 'vuetify' // path to vuetify export
-import router from '../plugins/router.js'
+import router from '../plugins/emptyRouter.js'
 import VueRouter from 'vue-router'
 import "vuetify/dist/vuetify.min.css";
 import '@mdi/font/css/materialdesignicons.css' // この行を追加
@@ -40,9 +40,9 @@ Vue
     .use(VueRouter)
 
 new Vue({
-    el: '#app',
+    el: '#appLogin',
     vuetify:new Vuetify(),
     router: router,
-    render: h => h(require('../components/AppComponent.vue').default)
+    render: h => h(require('../components/LoginComponent.vue').default)
 });
 
