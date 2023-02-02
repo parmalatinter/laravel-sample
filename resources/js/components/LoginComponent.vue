@@ -8,12 +8,17 @@
                             <v-toolbar dark color="primary">
                                 <v-toolbar-title>Login form</v-toolbar-title>
                             </v-toolbar>
-                            <v-card-text>
-                                <v-form>
+                            <form :action="routes.login.uri" method="post" >
+                                <v-card-text>
                                     <v-text-field
-                                        prepend-icon="mdi-account"
-                                        name="login"
-                                        label="Login"
+                                        name="_token"
+                                        :value="csrfToken"
+                                        type="hidden"
+                                    ></v-text-field>
+                                    <v-text-field
+                                        prepend-icon="mdi-email"
+                                        name="email"
+                                        label="Email"
                                         type="text"
                                     ></v-text-field>
                                     <v-text-field
@@ -23,12 +28,12 @@
                                         label="Password"
                                         type="password"
                                     ></v-text-field>
-                                </v-form>
-                            </v-card-text>
-                            <v-card-actions>
-                                <v-spacer></v-spacer>
-                                <v-btn color="primary" to="/">Login</v-btn>
-                            </v-card-actions>
+                                </v-card-text>
+                                <v-card-actions>
+                                    <v-spacer></v-spacer>
+                                    <v-btn type="submit" color="primary">Login</v-btn>
+                                </v-card-actions>
+                            </form>
                         </v-card>
                     </v-flex>
                 </v-layout>
@@ -38,9 +43,12 @@
 </template>
 
 <script>
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     export default {
         data: () => ({
+            routes : window.routes,
             name: 'Login',
+            csrfToken: csrfToken
         }),
         props: {
             source: String,

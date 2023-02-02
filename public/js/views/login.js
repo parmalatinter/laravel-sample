@@ -12,10 +12,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
-      name: 'Login'
+      routes: window.routes,
+      name: 'Login',
+      csrfToken: csrfToken
     };
   },
   props: {
@@ -67,11 +70,22 @@ var render = function render() {
       dark: "",
       color: "primary"
     }
-  }, [_c("v-toolbar-title", [_vm._v("Login form")])], 1), _vm._v(" "), _c("v-card-text", [_c("v-form", [_c("v-text-field", {
+  }, [_c("v-toolbar-title", [_vm._v("Login form")])], 1), _vm._v(" "), _c("form", {
     attrs: {
-      "prepend-icon": "mdi-account",
-      name: "login",
-      label: "Login",
+      action: _vm.routes.login.uri,
+      method: "post"
+    }
+  }, [_c("v-card-text", [_c("v-text-field", {
+    attrs: {
+      name: "_token",
+      value: _vm.csrfToken,
+      type: "hidden"
+    }
+  }), _vm._v(" "), _c("v-text-field", {
+    attrs: {
+      "prepend-icon": "mdi-email",
+      name: "email",
+      label: "Email",
       type: "text"
     }
   }), _vm._v(" "), _c("v-text-field", {
@@ -82,12 +96,12 @@ var render = function render() {
       label: "Password",
       type: "password"
     }
-  })], 1)], 1), _vm._v(" "), _c("v-card-actions", [_c("v-spacer"), _vm._v(" "), _c("v-btn", {
+  })], 1), _vm._v(" "), _c("v-card-actions", [_c("v-spacer"), _vm._v(" "), _c("v-btn", {
     attrs: {
-      color: "primary",
-      to: "/"
+      type: "submit",
+      color: "primary"
     }
-  }, [_vm._v("Login")])], 1)], 1)], 1)], 1)], 1)], 1)], 1);
+  }, [_vm._v("Login")])], 1)], 1)], 1)], 1)], 1)], 1)], 1)], 1);
 };
 var staticRenderFns = [];
 render._withStripped = true;
