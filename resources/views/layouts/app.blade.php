@@ -86,6 +86,13 @@
 {{--    </footer>--}}
 {{--</div>--}}
 
+<script type="application/json" name="routes">
+    @json($routes)
+</script>
+<script>
+    const routesJson = document.getElementsByName('routes')[0].innerHTML;
+    window.routes = JSON.parse(routesJson);
+</script>
 <script src="{{ mix('js/app.js') }}"></script>
 <script src="{{ mix('js/views/main.js') }}"></script>
 

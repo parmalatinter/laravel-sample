@@ -10,6 +10,22 @@
         </v-app-bar>
 
         <v-layout fill-height>
+            <v-snackbar
+                v-model="snackbar"
+            >
+                {{ text }}
+
+                <template v-slot:action="{ attrs }">
+                    <v-btn
+                        color="pink"
+                        text
+                        v-bind="attrs"
+                        @click="snackbar = false"
+                    >
+                        Close
+                    </v-btn>
+                </template>
+            </v-snackbar>
         <v-navigation-drawer
             v-model="drawer"
             permanent
@@ -53,25 +69,6 @@
             </v-list>
         </v-navigation-drawer>
 
-<!--        <v-navigation-drawer-->
-<!--            v-model="drawer"-->
-<!--            clipped-->
-<!--            theme="dark"-->
-<!--            color="deep-orange darken-4"-->
-<!--        >-->
-<!--            <v-list-->
-<!--            >-->
-<!--                <v-list-item-->
-<!--                    exact-->
-<!--                    v-for="(item, i) in items"-->
-<!--                    :key=i-->
-<!--                    :to=item.to-->
-<!--                >-->
-<!--                    <v-list-item-title v-text="item.title"></v-list-item-title>-->
-<!--                </v-list-item>-->
-<!--            </v-list>-->
-<!--        </v-navigation-drawer>-->
-
         <v-main>
             <router-view></router-view>
         </v-main>
@@ -84,6 +81,9 @@
 
 export default {
     data: () => ({
+        routes : window.routes,
+        snackbar: true,
+        text: `You are logged in !`,
         drawer: true,
         miniVariant: true,
         items : [

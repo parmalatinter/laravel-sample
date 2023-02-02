@@ -12,6 +12,17 @@ use Flash;
 class ProductController extends AppBaseController
 {
     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+        parent::__construct();
+    }
+
+    /**
      * Display a listing of the Product.
      */
     public function index(Request $request)

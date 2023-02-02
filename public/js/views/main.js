@@ -15,6 +15,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
+      routes: window.routes,
+      snackbar: true,
+      text: "You are logged in !",
       drawer: true,
       miniVariant: true,
       items: [{
@@ -53,6 +56,7 @@ var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
+      routes: window.routes,
       dialog: false,
       dialogDelete: false,
       headers: [{
@@ -60,12 +64,7 @@ var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('
         align: 'start',
         sortable: false,
         value: 'name'
-      },
-      // { text: 'Calories', value: 'calories' },
-      // { text: 'Fat (g)', value: 'fat' },
-      // { text: 'Carbs (g)', value: 'carbs' },
-      // { text: 'Protein (g)', value: 'protein' },
-      {
+      }, {
         text: 'Actions',
         value: 'actions',
         sortable: false
@@ -77,21 +76,12 @@ var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('
       editedIndex: -1,
       editedItem: {
         name: ''
-        // calories: 0,
-        // fat: 0,
-        // carbs: 0,
-        // protein: 0,
       },
-
       defaultItem: {
         name: ''
-        // calories: 0,
-        // fat: 0,
-        // carbs: 0,
-        // protein: 0,
       },
-
-      options: {}
+      options: {},
+      loading: true
     };
   },
   computed: {
@@ -118,82 +108,10 @@ var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('
     this.loadItems();
   },
   methods: {
-    initialize: function initialize() {
-      // this.items = [
-      //     {
-      //         name: 'Frozen Yogurt',
-      //         calories: 159,
-      //         fat: 6.0,
-      //         carbs: 24,
-      //         protein: 4.0,
-      //     },
-      //     {
-      //         name: 'Ice cream sandwich',
-      //         calories: 237,
-      //         fat: 9.0,
-      //         carbs: 37,
-      //         protein: 4.3,
-      //     },
-      //     {
-      //         name: 'Eclair',
-      //         calories: 262,
-      //         fat: 16.0,
-      //         carbs: 23,
-      //         protein: 6.0,
-      //     },
-      //     {
-      //         name: 'Cupcake',
-      //         calories: 305,
-      //         fat: 3.7,
-      //         carbs: 67,
-      //         protein: 4.3,
-      //     },
-      //     {
-      //         name: 'Gingerbread',
-      //         calories: 356,
-      //         fat: 16.0,
-      //         carbs: 49,
-      //         protein: 3.9,
-      //     },
-      //     {
-      //         name: 'Jelly bean',
-      //         calories: 375,
-      //         fat: 0.0,
-      //         carbs: 94,
-      //         protein: 0.0,
-      //     },
-      //     {
-      //         name: 'Lollipop',
-      //         calories: 392,
-      //         fat: 0.2,
-      //         carbs: 98,
-      //         protein: 0,
-      //     },
-      //     {
-      //         name: 'Honeycomb',
-      //         calories: 408,
-      //         fat: 3.2,
-      //         carbs: 87,
-      //         protein: 6.5,
-      //     },
-      //     {
-      //         name: 'Donut',
-      //         calories: 452,
-      //         fat: 25.0,
-      //         carbs: 51,
-      //         protein: 4.9,
-      //     },
-      //     {
-      //         name: 'KitKat',
-      //         calories: 518,
-      //         fat: 26.0,
-      //         carbs: 65,
-      //         protein: 7,
-      //     },
-      // ]
-    },
+    initialize: function initialize() {},
     loadItems: function loadItems() {
       var _this = this;
+      this.loading = true;
       this.items = [];
       var _this$options = this.options,
         page = _this$options.page,
@@ -206,6 +124,7 @@ var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('
       }).then(function (response) {
         _this.totalRowCount = response.data.data.totalRowCount;
         _this.items = response.data.data.rows;
+        _this.loading = false;
       })["catch"](function (error) {
         console.log(error);
       });
@@ -330,7 +249,32 @@ var render = function render() {
     attrs: {
       "fill-height": ""
     }
-  }, [_c("v-navigation-drawer", {
+  }, [_c("v-snackbar", {
+    scopedSlots: _vm._u([{
+      key: "action",
+      fn: function fn(_ref) {
+        var attrs = _ref.attrs;
+        return [_c("v-btn", _vm._b({
+          attrs: {
+            color: "pink",
+            text: ""
+          },
+          on: {
+            click: function click($event) {
+              _vm.snackbar = false;
+            }
+          }
+        }, "v-btn", attrs, false), [_vm._v("\n                    Close\n                ")])];
+      }
+    }]),
+    model: {
+      value: _vm.snackbar,
+      callback: function callback($$v) {
+        _vm.snackbar = $$v;
+      },
+      expression: "snackbar"
+    }
+  }, [_vm._v("\n            " + _vm._s(_vm.text) + "\n\n            ")]), _vm._v(" "), _c("v-navigation-drawer", {
     attrs: {
       permanent: "",
       "mini-variant": _vm.miniVariant
@@ -362,7 +306,7 @@ var render = function render() {
     }
   }, [_c("v-list-item-content", [_c("v-list-item-title", {
     staticClass: "text-h6"
-  }, [_vm._v("\n                            Sandra Adams\n                        ")]), _vm._v(" "), _c("v-list-item-subtitle", [_vm._v("sandra_a88@gmail.com")])], 1)], 1)], 1), _vm._v(" "), _c("v-divider"), _vm._v(" "), _c("v-list", {
+  }, [_vm._v("\n                        Sandra Adams\n                    ")]), _vm._v(" "), _c("v-list-item-subtitle", [_vm._v("sandra_a88@gmail.com")])], 1)], 1)], 1), _vm._v(" "), _c("v-divider"), _vm._v(" "), _c("v-list", {
     attrs: {
       nav: "",
       dense: ""
@@ -411,7 +355,9 @@ var render = function render() {
       items: _vm.items,
       "sort-by": "name",
       "server-items-length": _vm.totalRowCount,
-      options: _vm.options
+      options: _vm.options,
+      loading: _vm.loading,
+      "loading-text": "Now loading..."
     },
     on: {
       "update:options": function updateOptions($event) {
@@ -548,19 +494,6 @@ var render = function render() {
           }
         }, [_vm._v("\n            mdi-delete\n        ")])];
       }
-    }, {
-      key: "no-data",
-      fn: function fn() {
-        return [_c("v-btn", {
-          attrs: {
-            color: "primary"
-          },
-          on: {
-            click: _vm.initialize
-          }
-        }, [_vm._v("\n            Reset\n        ")])];
-      },
-      proxy: true
     }])
   });
 };
