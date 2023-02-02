@@ -1,59 +1,43 @@
 <template>
     <v-app>
         <v-app-bar
+            app
             color="green"
-            dense
-            elevation="4"
+            flat
         >
             <v-app-bar-nav-icon variant="text" @click.stop="miniVariant = !miniVariant"></v-app-bar-nav-icon>
             <v-toolbar-title>Vuetify</v-toolbar-title>
         </v-app-bar>
 
-        <v-layout fill-height>
-            <v-snackbar
-                v-model="snackbar"
-            >
-                {{ text }}
-
-                <template v-slot:action="{ attrs }">
-                    <v-btn
-                        color="pink"
-                        text
-                        v-bind="attrs"
-                        @click="snackbar = false"
-                    >
-                        Close
-                    </v-btn>
-                </template>
-            </v-snackbar>
         <v-navigation-drawer
             v-model="drawer"
             permanent
             :mini-variant.sync="miniVariant"
+            app
+            flat
+            color="green lighten-3"
         >
+
             <v-list>
                 <v-list-item class="px-2">
-                    <v-list-item-avatar>
+                    <v-list-item-avatar size="34px" >
                         <v-img src="https://randomuser.me/api/portraits/women/85.jpg"></v-img>
                     </v-list-item-avatar>
                 </v-list-item>
-
+            </v-list>
+            <v-divider></v-divider>
+            <v-list>
                 <v-list-item link>
                     <v-list-item-content>
-                        <v-list-item-title class="text-h6">
+                        <v-list-item-title>
                             Sandra Adams
                         </v-list-item-title>
                         <v-list-item-subtitle>sandra_a88@gmail.com</v-list-item-subtitle>
                     </v-list-item-content>
                 </v-list-item>
             </v-list>
-
             <v-divider></v-divider>
-
-            <v-list
-                nav
-                dense
-            >
+            <v-list>
                 <v-list-item
                     link
                     exact
@@ -70,9 +54,63 @@
         </v-navigation-drawer>
 
         <v-main>
-            <router-view></router-view>
+            <v-container>
+                <v-row>
+                    <v-col
+                        cols="12"
+                        lg="1"
+                        class="d-none d-lg-block d-xl-block"
+                    >
+                        <v-sheet
+                            rounded="lg"
+                            min-height="70vh"
+                        >
+                            <!--  -->
+                        </v-sheet>
+                    </v-col>
+                    <v-col
+                        cols="12"
+                        md="12"
+                        lg="10"
+                    >
+                        <v-sheet
+                            rounded="lg"
+                            min-height="70vh"
+                        >
+                            <v-snackbar
+                                v-model="snackbar"
+                            >
+                                {{ text }}
+
+                                <template v-slot:action="{ attrs }">
+                                    <v-btn
+                                        color="pink"
+                                        text
+                                        v-bind="attrs"
+                                        @click="snackbar = false"
+                                    >
+                                        Close
+                                    </v-btn>
+                                </template>
+                            </v-snackbar>
+                            <router-view></router-view>
+                        </v-sheet>
+                    </v-col>
+                    <v-col
+                        cols="12"
+                        lg="1"
+                        class="d-none d-lg-block d-xl-block"
+                    >
+                        <v-sheet
+                            min-height="70vh"
+                            rounded="lg"
+                        >
+                            <!--  -->
+                        </v-sheet>
+                    </v-col>
+                </v-row>
+            </v-container>
         </v-main>
-        </v-layout>
 
     </v-app>
 </template>

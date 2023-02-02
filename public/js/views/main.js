@@ -231,9 +231,9 @@ var render = function render() {
     _c = _vm._self._c;
   return _c("v-app", [_c("v-app-bar", {
     attrs: {
+      app: "",
       color: "green",
-      dense: "",
-      elevation: "4"
+      flat: ""
     }
   }, [_c("v-app-bar-nav-icon", {
     attrs: {
@@ -245,39 +245,13 @@ var render = function render() {
         _vm.miniVariant = !_vm.miniVariant;
       }
     }
-  }), _vm._v(" "), _c("v-toolbar-title", [_vm._v("Vuetify")])], 1), _vm._v(" "), _c("v-layout", {
-    attrs: {
-      "fill-height": ""
-    }
-  }, [_c("v-snackbar", {
-    scopedSlots: _vm._u([{
-      key: "action",
-      fn: function fn(_ref) {
-        var attrs = _ref.attrs;
-        return [_c("v-btn", _vm._b({
-          attrs: {
-            color: "pink",
-            text: ""
-          },
-          on: {
-            click: function click($event) {
-              _vm.snackbar = false;
-            }
-          }
-        }, "v-btn", attrs, false), [_vm._v("\n                    Close\n                ")])];
-      }
-    }]),
-    model: {
-      value: _vm.snackbar,
-      callback: function callback($$v) {
-        _vm.snackbar = $$v;
-      },
-      expression: "snackbar"
-    }
-  }, [_vm._v("\n            " + _vm._s(_vm.text) + "\n\n            ")]), _vm._v(" "), _c("v-navigation-drawer", {
+  }), _vm._v(" "), _c("v-toolbar-title", [_vm._v("Vuetify")])], 1), _vm._v(" "), _c("v-navigation-drawer", {
     attrs: {
       permanent: "",
-      "mini-variant": _vm.miniVariant
+      "mini-variant": _vm.miniVariant,
+      app: "",
+      flat: "",
+      color: "green lighten-3"
     },
     on: {
       "update:miniVariant": function updateMiniVariant($event) {
@@ -296,22 +270,19 @@ var render = function render() {
     }
   }, [_c("v-list", [_c("v-list-item", {
     staticClass: "px-2"
-  }, [_c("v-list-item-avatar", [_c("v-img", {
+  }, [_c("v-list-item-avatar", {
+    attrs: {
+      size: "34px"
+    }
+  }, [_c("v-img", {
     attrs: {
       src: "https://randomuser.me/api/portraits/women/85.jpg"
     }
-  })], 1)], 1), _vm._v(" "), _c("v-list-item", {
+  })], 1)], 1)], 1), _vm._v(" "), _c("v-divider"), _vm._v(" "), _c("v-list", [_c("v-list-item", {
     attrs: {
       link: ""
     }
-  }, [_c("v-list-item-content", [_c("v-list-item-title", {
-    staticClass: "text-h6"
-  }, [_vm._v("\n                        Sandra Adams\n                    ")]), _vm._v(" "), _c("v-list-item-subtitle", [_vm._v("sandra_a88@gmail.com")])], 1)], 1)], 1), _vm._v(" "), _c("v-divider"), _vm._v(" "), _c("v-list", {
-    attrs: {
-      nav: "",
-      dense: ""
-    }
-  }, _vm._l(_vm.items, function (item, i) {
+  }, [_c("v-list-item-content", [_c("v-list-item-title", [_vm._v("\n                        Sandra Adams\n                    ")]), _vm._v(" "), _c("v-list-item-subtitle", [_vm._v("sandra_a88@gmail.com")])], 1)], 1)], 1), _vm._v(" "), _c("v-divider"), _vm._v(" "), _c("v-list", _vm._l(_vm.items, function (item, i) {
     return _c("v-list-item", {
       key: i,
       attrs: {
@@ -324,7 +295,65 @@ var render = function render() {
         textContent: _vm._s(item.title)
       }
     })], 1);
-  }), 1)], 1), _vm._v(" "), _c("v-main", [_c("router-view")], 1)], 1)], 1);
+  }), 1)], 1), _vm._v(" "), _c("v-main", [_c("v-container", [_c("v-row", [_c("v-col", {
+    staticClass: "d-none d-lg-block d-xl-block",
+    attrs: {
+      cols: "12",
+      lg: "1"
+    }
+  }, [_c("v-sheet", {
+    attrs: {
+      rounded: "lg",
+      "min-height": "70vh"
+    }
+  })], 1), _vm._v(" "), _c("v-col", {
+    attrs: {
+      cols: "12",
+      md: "12",
+      lg: "10"
+    }
+  }, [_c("v-sheet", {
+    attrs: {
+      rounded: "lg",
+      "min-height": "70vh"
+    }
+  }, [_c("v-snackbar", {
+    scopedSlots: _vm._u([{
+      key: "action",
+      fn: function fn(_ref) {
+        var attrs = _ref.attrs;
+        return [_c("v-btn", _vm._b({
+          attrs: {
+            color: "pink",
+            text: ""
+          },
+          on: {
+            click: function click($event) {
+              _vm.snackbar = false;
+            }
+          }
+        }, "v-btn", attrs, false), [_vm._v("\n                                    Close\n                                ")])];
+      }
+    }]),
+    model: {
+      value: _vm.snackbar,
+      callback: function callback($$v) {
+        _vm.snackbar = $$v;
+      },
+      expression: "snackbar"
+    }
+  }, [_vm._v("\n                            " + _vm._s(_vm.text) + "\n\n                            ")]), _vm._v(" "), _c("router-view")], 1)], 1), _vm._v(" "), _c("v-col", {
+    staticClass: "d-none d-lg-block d-xl-block",
+    attrs: {
+      cols: "12",
+      lg: "1"
+    }
+  }, [_c("v-sheet", {
+    attrs: {
+      "min-height": "70vh",
+      rounded: "lg"
+    }
+  })], 1)], 1)], 1)], 1)], 1);
 };
 var staticRenderFns = [];
 render._withStripped = true;
