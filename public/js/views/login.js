@@ -18,11 +18,34 @@ __webpack_require__.r(__webpack_exports__);
       routes: window.routes,
       csrfToken: window.csrfToken,
       olds: window.olds,
-      name: 'Login'
+      valid: true,
+      email: window.olds ? window.olds.email : '',
+      emailRules: [function (v) {
+        return !!v || 'Email is required';
+      }, function (v) {
+        return v && v.length <= 10 || 'Name must be less than 10 characters';
+      }],
+      password: '',
+      passwordRules: [function (v) {
+        return !!v || 'Email is required';
+      }, function (v) {
+        return v && v.length <= 10 || 'Name must be less than 10 characters';
+      }]
     };
   },
   props: {
     source: String
+  },
+  methods: {
+    validate: function validate() {
+      this.$refs.form.validate();
+    },
+    reset: function reset() {
+      this.$refs.form.reset();
+    },
+    resetValidation: function resetValidation() {
+      this.$refs.form.resetValidation();
+    }
   }
 });
 
@@ -70,10 +93,19 @@ var render = function render() {
       dark: "",
       color: "primary"
     }
-  }, [_c("v-toolbar-title", [_vm._v("Login form")])], 1), _vm._v(" "), _c("form", {
+  }, [_c("v-toolbar-title", [_vm._v("Login form")])], 1), _vm._v(" "), _c("v-form", {
+    ref: "form",
     attrs: {
+      "lazy-validation": "",
       action: _vm.routes.login.uri,
       method: "post"
+    },
+    model: {
+      value: _vm.valid,
+      callback: function callback($$v) {
+        _vm.valid = $$v;
+      },
+      expression: "valid"
     }
   }, [_c("v-card-text", [!!_vm.olds.email ? _c("v-item", [_c("p", {
     staticClass: "red--text"
@@ -94,7 +126,17 @@ var render = function render() {
       name: "email",
       label: "Email",
       type: "text",
-      value: _vm.olds.email
+      value: _vm.olds.email,
+      counter: 10,
+      rules: _vm.emailRules,
+      required: ""
+    },
+    model: {
+      value: _vm.email,
+      callback: function callback($$v) {
+        _vm.email = $$v;
+      },
+      expression: "email"
     }
   }), _vm._v(" "), _c("v-text-field", {
     attrs: {
@@ -102,7 +144,17 @@ var render = function render() {
       "prepend-icon": "mdi-lock",
       name: "password",
       label: "Password",
-      type: "password"
+      type: "password",
+      counter: 10,
+      rules: _vm.passwordRules,
+      required: ""
+    },
+    model: {
+      value: _vm.password,
+      callback: function callback($$v) {
+        _vm.password = $$v;
+      },
+      expression: "password"
     }
   }), _vm._v(" "), _c("v-checkbox", {
     attrs: {
@@ -122,10 +174,14 @@ var render = function render() {
     }
   }, [_vm._v("Register a new membership")])])], 1), _vm._v(" "), _c("v-card-actions", [_c("v-spacer"), _vm._v(" "), _c("v-btn", {
     attrs: {
+      disabled: !_vm.valid,
       type: "submit",
       color: "primary"
+    },
+    on: {
+      click: _vm.validate
     }
-  }, [_vm._v("Login")])], 1)], 1)], 1)], 1)], 1)], 1)], 1)], 1);
+  }, [_vm._v("\n                                    Login\n                                ")])], 1)], 1)], 1)], 1)], 1)], 1)], 1)], 1);
 };
 var staticRenderFns = [];
 render._withStripped = true;

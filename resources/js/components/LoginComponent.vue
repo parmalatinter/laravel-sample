@@ -8,7 +8,13 @@
                             <v-toolbar dark color="primary">
                                 <v-toolbar-title>Login form</v-toolbar-title>
                             </v-toolbar>
-                            <form :action="routes.login.uri" method="post" >
+                            <v-form
+                                ref="form"
+                                v-model="valid"
+                                lazy-validation
+                                :action="routes.login.uri"
+                                method="post"
+                            >
                                 <v-card-text>
                                     <v-item v-if="!!olds.email">
                                         <p class="red--text">Login Failed</p>
@@ -24,6 +30,10 @@
                                         label="Email"
                                         type="text"
                                         :value="olds.email"
+                                        v-model="email"
+                                        :counter="10"
+                                        :rules="emailRules"
+                                        required
                                     ></v-text-field>
                                     <v-text-field
                                         id="password"
@@ -31,6 +41,10 @@
                                         name="password"
                                         label="Password"
                                         type="password"
+                                        v-model="password"
+                                        :counter="10"
+                                        :rules="passwordRules"
+                                        required
                                     ></v-text-field>
                                     <v-checkbox
                                         name="remember"
@@ -46,9 +60,17 @@
                                 </v-card-text>
                                 <v-card-actions>
                                     <v-spacer></v-spacer>
-                                    <v-btn type="submit" color="primary">Login</v-btn>
+                                    <v-btn
+                                        :disabled="!valid"
+                                        @click="validate"
+                                        type="submit"
+                                        color="primary"
+                                    >
+                                        Login
+                                    </v-btn>
+
                                 </v-card-actions>
-                            </form>
+                            </v-form>
                         </v-card>
                     </v-flex>
                 </v-layout>
@@ -63,10 +85,31 @@
             routes : window.routes,
             csrfToken: window.csrfToken,
             olds: window.olds,
-            name: 'Login',
+            valid: true,
+            email: window.olds ?  window.olds.email : '',
+            emailRules: [
+                v => !!v || 'Email is required',
+                v => (v && v.length <= 10) || 'Name must be less than 10 characters',
+            ],
+            password: '',
+            passwordRules: [
+                v => !!v || 'Email is required',
+                v => (v && v.length <= 10) || 'Name must be less than 10 characters',
+            ],
         }),
         props: {
             source: String,
+        },
+        methods: {
+            validate () {
+                this.$refs.form.validate()
+            },
+            reset () {
+                this.$refs.form.reset()
+            },
+            resetValidation () {
+                this.$refs.form.resetValidation()
+            },
         },
     }
 </script>
