@@ -5,7 +5,7 @@
             color="green"
             flat
         >
-            <v-app-bar-nav-icon variant="text" @click.stop="miniVariant = !miniVariant"></v-app-bar-nav-icon>
+            <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
             <v-toolbar-title>Vuetify</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-menu
@@ -57,8 +57,9 @@
 
         <v-navigation-drawer
             v-model="drawer"
-            permanent
+            temporary
             :mini-variant.sync="miniVariant"
+            expand-on-hover
             app
             flat
             color="green lighten-3"
@@ -170,7 +171,7 @@ export default {
         snackbar: true,
         csrfToken: window.csrfToken,
         text: `You are logged in !`,
-        drawer: true,
+        drawer: false,
         miniVariant: true,
         items : [
             {

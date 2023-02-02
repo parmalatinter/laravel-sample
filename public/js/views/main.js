@@ -70,7 +70,7 @@ __webpack_require__.r(__webpack_exports__);
       snackbar: true,
       csrfToken: window.csrfToken,
       text: "You are logged in !",
-      drawer: true,
+      drawer: false,
       miniVariant: true,
       items: [{
         title: 'Home',
@@ -436,7 +436,7 @@ var render = function render() {
     on: {
       click: function click($event) {
         $event.stopPropagation();
-        _vm.miniVariant = !_vm.miniVariant;
+        _vm.drawer = !_vm.drawer;
       }
     }
   }), _vm._v(" "), _c("v-toolbar-title", [_vm._v("Vuetify")]), _vm._v(" "), _c("v-spacer"), _vm._v(" "), _c("v-menu", {
@@ -486,8 +486,9 @@ var render = function render() {
     }
   }, [_vm._v("\n                                Logout\n                            ")])], 1)], 1)], 1)], 1)], 1)], 1), _vm._v(" "), _c("v-navigation-drawer", {
     attrs: {
-      permanent: "",
+      temporary: "",
       "mini-variant": _vm.miniVariant,
+      "expand-on-hover": "",
       app: "",
       flat: "",
       color: "green lighten-3"
