@@ -17,6 +17,7 @@ __webpack_require__.r(__webpack_exports__);
     return {
       routes: window.routes,
       snackbar: true,
+      csrfToken: window.csrfToken,
       text: "You are logged in !",
       drawer: true,
       miniVariant: true,
@@ -244,7 +245,47 @@ var render = function render() {
         _vm.miniVariant = !_vm.miniVariant;
       }
     }
-  }), _vm._v(" "), _c("v-toolbar-title", [_vm._v("Vuetify")])], 1), _vm._v(" "), _c("v-navigation-drawer", {
+  }), _vm._v(" "), _c("v-toolbar-title", [_vm._v("Vuetify")]), _vm._v(" "), _c("v-spacer"), _vm._v(" "), _c("v-menu", {
+    attrs: {
+      "offset-y": ""
+    },
+    scopedSlots: _vm._u([{
+      key: "activator",
+      fn: function fn(_ref) {
+        var on = _ref.on,
+          attrs = _ref.attrs;
+        return [_c("v-btn", _vm._g(_vm._b({
+          attrs: {
+            icon: ""
+          }
+        }, "v-btn", attrs, false), on), [_c("v-icon", [_vm._v("mdi-dots-vertical")])], 1)];
+      }
+    }])
+  }, [_vm._v(" "), _c("v-list", [_c("v-list-item", [_c("v-list-item-title", [_c("v-form", {
+    ref: "form",
+    attrs: {
+      action: _vm.routes.logout.uri,
+      method: _vm.routes.logout.methods[0]
+    }
+  }, [_c("v-text-field", {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: false,
+      expression: "false"
+    }],
+    attrs: {
+      name: "_token",
+      value: _vm.csrfToken
+    }
+  }), _vm._v(" "), _c("v-btn", {
+    attrs: {
+      icon: "",
+      type: "submit",
+      plain: "",
+      block: ""
+    }
+  }, [_vm._v("\n                                Logout\n                            ")])], 1)], 1)], 1)], 1)], 1)], 1), _vm._v(" "), _c("v-navigation-drawer", {
     attrs: {
       permanent: "",
       "mini-variant": _vm.miniVariant,
@@ -319,8 +360,8 @@ var render = function render() {
   }, [_c("v-snackbar", {
     scopedSlots: _vm._u([{
       key: "action",
-      fn: function fn(_ref) {
-        var attrs = _ref.attrs;
+      fn: function fn(_ref2) {
+        var attrs = _ref2.attrs;
         return [_c("v-btn", _vm._b({
           attrs: {
             color: "pink",

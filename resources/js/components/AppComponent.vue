@@ -7,6 +7,47 @@
         >
             <v-app-bar-nav-icon variant="text" @click.stop="miniVariant = !miniVariant"></v-app-bar-nav-icon>
             <v-toolbar-title>Vuetify</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-menu
+                offset-y
+            >
+                <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                        icon
+                        v-bind="attrs"
+                        v-on="on"
+                    >
+                        <v-icon>mdi-dots-vertical</v-icon>
+                    </v-btn>
+                </template>
+
+                <v-list>
+                    <v-list-item>
+                        <v-list-item-title>
+                            <v-form
+                                ref="form"
+                                :action="routes.logout.uri"
+                                :method="routes.logout.methods[0]"
+                            >
+                                <v-text-field
+                                    name="_token"
+                                    :value="csrfToken"
+                                    v-show="false"
+                                ></v-text-field>
+                                <v-btn
+                                    icon
+                                    type="submit"
+                                    plain
+                                    block
+                                >
+                                    Logout
+                                </v-btn>
+                            </v-form>
+                        </v-list-item-title>
+                    </v-list-item>
+                </v-list>
+            </v-menu>
+
         </v-app-bar>
 
         <v-navigation-drawer
@@ -121,6 +162,7 @@ export default {
     data: () => ({
         routes : window.routes,
         snackbar: true,
+        csrfToken: window.csrfToken,
         text: `You are logged in !`,
         drawer: true,
         miniVariant: true,
