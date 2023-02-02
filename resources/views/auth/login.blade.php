@@ -95,8 +95,15 @@
     window.routes = {
         login : {
             uri : '{{ route('login')}}'
+        },
+        passwordRequest : {
+            uri : '{{ route('password.request')}}'
+        },
+        register : {
+            uri : '{{ route('register')}}'
         }
     }
+    window.csrfToken = '{{ csrf_token() }}';
 </script>
 
 <script src="{{ mix('js/app.js') }}"></script>

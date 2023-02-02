@@ -90,8 +90,9 @@
     @json($routes)
 </script>
 <script>
-    const routesJson = document.getElementsByName('routes')[0].innerHTML;
+    const routesJson = document.getElementsByName("routes")[0].innerhtml;
     window.routes = JSON.parse(routesJson);
+    window.csrfToken = '{{ csrf_token() }}';
 </script>
 <script src="{{ mix('js/app.js') }}"></script>
 <script src="{{ mix('js/views/main.js') }}"></script>

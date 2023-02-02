@@ -12,13 +12,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
       routes: window.routes,
-      name: 'Login',
-      csrfToken: csrfToken
+      csrfToken: window.csrfToken,
+      name: 'Login'
     };
   },
   props: {
@@ -96,7 +95,23 @@ var render = function render() {
       label: "Password",
       type: "password"
     }
-  })], 1), _vm._v(" "), _c("v-card-actions", [_c("v-spacer"), _vm._v(" "), _c("v-btn", {
+  }), _vm._v(" "), _c("v-checkbox", {
+    attrs: {
+      name: "remember",
+      label: "Remember Me",
+      value: "1"
+    }
+  }), _vm._v(" "), _c("p", [_c("a", {
+    staticClass: "text-decoration-none",
+    attrs: {
+      href: _vm.routes.passwordRequest.uri
+    }
+  }, [_vm._v("I forgot my password")])]), _vm._v(" "), _c("p", [_c("a", {
+    staticClass: "text-decoration-none",
+    attrs: {
+      href: _vm.routes.register.uri
+    }
+  }, [_vm._v("Register a new membership")])])], 1), _vm._v(" "), _c("v-card-actions", [_c("v-spacer"), _vm._v(" "), _c("v-btn", {
     attrs: {
       type: "submit",
       color: "primary"

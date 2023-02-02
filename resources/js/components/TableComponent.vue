@@ -112,10 +112,10 @@
 
 import axios from "axios";
 
-const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 export default {
     data: () => ({
         routes : window.routes,
+        csrfToken : window.csrfToken,
         dialog: false,
         dialogDelete: false,
         headers: [
@@ -174,7 +174,7 @@ export default {
             const skip = (page-1) * itemsPerPage
             axios.get(
                 `api/items?skip=${skip}&limit=${itemsPerPage}`,
-                { headers: { Authorization: "Bearer " + csrfToken }}
+                { headers: { Authorization: "Bearer " + this.csrfToken }}
                 )
                 .then((response) => {
                     this.totalRowCount = response.data.data.totalRowCount
@@ -204,7 +204,7 @@ export default {
             // save the record
             axios[method](url,
                 item,
-                { headers: { Authorization: "Bearer " + csrfToken }}
+                { headers: { Authorization: "Bearer " + this.csrfToken }}
                 ).then((response) => {
                     if (response.data) {
                         // add new item to state
@@ -250,7 +250,7 @@ export default {
 
                 axios[method](url,
                     { headers: {
-                        Authorization: "Bearer " + csrfToken,
+                        Authorization: "Bearer " + this.csrfToken,
                         "Content-Type": "application/json"
                     }
                 }).then((response) => {

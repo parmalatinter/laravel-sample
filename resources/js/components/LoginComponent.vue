@@ -28,6 +28,17 @@
                                         label="Password"
                                         type="password"
                                     ></v-text-field>
+                                    <v-checkbox
+                                        name="remember"
+                                        label="Remember Me"
+                                        value="1"
+                                    ></v-checkbox>
+                                    <p>
+                                        <a :href="routes.passwordRequest.uri" class="text-decoration-none">I forgot my password</a>
+                                    </p>
+                                    <p>
+                                        <a :href="routes.register.uri" class="text-decoration-none">Register a new membership</a>
+                                    </p>
                                 </v-card-text>
                                 <v-card-actions>
                                     <v-spacer></v-spacer>
@@ -43,12 +54,11 @@
 </template>
 
 <script>
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     export default {
         data: () => ({
             routes : window.routes,
+            csrfToken: window.csrfToken,
             name: 'Login',
-            csrfToken: csrfToken
         }),
         props: {
             source: String,

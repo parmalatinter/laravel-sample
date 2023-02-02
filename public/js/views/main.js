@@ -52,11 +52,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
 
-var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
       routes: window.routes,
+      csrfToken: window.csrfToken,
       dialog: false,
       dialogDelete: false,
       headers: [{
@@ -119,7 +119,7 @@ var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('
       var skip = (page - 1) * itemsPerPage;
       axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("api/items?skip=".concat(skip, "&limit=").concat(itemsPerPage), {
         headers: {
-          Authorization: "Bearer " + csrfToken
+          Authorization: "Bearer " + this.csrfToken
         }
       }).then(function (response) {
         _this.totalRowCount = response.data.data.totalRowCount;
@@ -149,7 +149,7 @@ var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('
       // save the record
       axios__WEBPACK_IMPORTED_MODULE_0__["default"][method](url, item, {
         headers: {
-          Authorization: "Bearer " + csrfToken
+          Authorization: "Bearer " + this.csrfToken
         }
       }).then(function (response) {
         if (response.data) {
@@ -196,7 +196,7 @@ var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('
         var url = "api/items/".concat(id);
         axios__WEBPACK_IMPORTED_MODULE_0__["default"][method](url, {
           headers: {
-            Authorization: "Bearer " + csrfToken,
+            Authorization: "Bearer " + _this4.csrfToken,
             "Content-Type": "application/json"
           }
         }).then(function (response) {
