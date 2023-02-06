@@ -262,7 +262,7 @@ export default {
                         "Content-Type": "application/json"
                     }
                 }).then((response) => {
-                    this.items.splice(this.editedIndex, 1)
+                    this.loadItems()
                     this.editedItem = Object.assign({}, this.defaultItem)
                     this.editedIndex = -1
                 })

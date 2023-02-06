@@ -287,7 +287,7 @@ __webpack_require__.r(__webpack_exports__);
             "Content-Type": "application/json"
           }
         }).then(function (response) {
-          _this4.items.splice(_this4.editedIndex, 1);
+          _this4.loadItems();
           _this4.editedItem = Object.assign({}, _this4.defaultItem);
           _this4.editedIndex = -1;
         });
