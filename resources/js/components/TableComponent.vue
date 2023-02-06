@@ -128,6 +128,7 @@ export default {
             { text: 'Actions', value: 'actions', sortable: false },
         ],
         page: 1,
+        lastPage: 1,
         totalRowCount: 0,
         limit: 10,
         items: [],
@@ -166,10 +167,13 @@ export default {
     },
     methods: {
         initialize () {},
-        loadItems() {
+        loadItems(_page = null) {
             this.loading= true;
             this.items = []
-            const { page, itemsPerPage } = this.options;
+            let { page, itemsPerPage } = this.options;
+            if(_page){
+                page = _page
+            }
             const skip = (page-1) * itemsPerPage
             axios.get(
                 `api/items?skip=${skip}&limit=${itemsPerPage}`,
@@ -179,10 +183,14 @@ export default {
                     this.totalRowCount = response.data.data.totalRowCount
                     this.items = response.data.data.rows
                     this.loading = false
+                    this.setLast();
                 })
                 .catch((error) => {
                     console.log(error)
             })
+        },
+        setLast(){
+            this.lastPage = Math.ceil(this.totalRowCount / this.options.itemsPerPage)
         },
         saveItem(item) {
             /* this is used for both creating and updating API records
@@ -209,10 +217,11 @@ export default {
                         // add new item to state
                         this.editedItem = response.data.data
                         if (!id) {
-                            // add the new item to items state
-                            this.items.push(this.editedItem)
+                            this.totalRowCount++;
+                            this.setLast();
+                            this.loadItems(this.lastPage)
                         }else{
-                            Object.assign(this.items[this.editedIndex], this.editedItem)
+                            this.loadItems()
                         }
                         this.editedItem = {}
                     }

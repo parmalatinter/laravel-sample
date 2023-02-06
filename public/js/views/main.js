@@ -148,6 +148,7 @@ __webpack_require__.r(__webpack_exports__);
         sortable: false
       }],
       page: 1,
+      lastPage: 1,
       totalRowCount: 0,
       limit: 10,
       items: [],
@@ -188,11 +189,15 @@ __webpack_require__.r(__webpack_exports__);
     initialize: function initialize() {},
     loadItems: function loadItems() {
       var _this = this;
+      var _page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
       this.loading = true;
       this.items = [];
       var _this$options = this.options,
         page = _this$options.page,
         itemsPerPage = _this$options.itemsPerPage;
+      if (_page) {
+        page = _page;
+      }
       var skip = (page - 1) * itemsPerPage;
       axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("api/items?skip=".concat(skip, "&limit=").concat(itemsPerPage), {
         headers: {
@@ -202,9 +207,13 @@ __webpack_require__.r(__webpack_exports__);
         _this.totalRowCount = response.data.data.totalRowCount;
         _this.items = response.data.data.rows;
         _this.loading = false;
+        _this.setLast();
       })["catch"](function (error) {
         console.log(error);
       });
+    },
+    setLast: function setLast() {
+      this.lastPage = Math.ceil(this.totalRowCount / this.options.itemsPerPage);
     },
     saveItem: function saveItem(item) {
       var _this2 = this;
@@ -233,10 +242,11 @@ __webpack_require__.r(__webpack_exports__);
           // add new item to state
           _this2.editedItem = response.data.data;
           if (!id) {
-            // add the new item to items state
-            _this2.items.push(_this2.editedItem);
+            _this2.totalRowCount++;
+            _this2.setLast();
+            _this2.loadItems(_this2.lastPage);
           } else {
-            Object.assign(_this2.items[_this2.editedIndex], _this2.editedItem);
+            _this2.loadItems();
           }
           _this2.editedItem = {};
         }
