@@ -9,6 +9,8 @@
         :options.sync="options"
         :loading="loading"
         loading-text="Now loading..."
+        fixed-header
+        height="50vh"
     >
         <template v-slot:top>
             <v-toolbar
