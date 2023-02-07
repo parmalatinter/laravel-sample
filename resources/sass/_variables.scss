@@ -10,3 +10,18 @@ $yellow: #ffc107 !default;
 $green: #28a745 !default;
 $teal: #20c997 !default;
 $cyan: #17a2b8 !default;
+
+@import url('https://fonts.googleapis.com/css? family=Oxygen:300,400,700&display=swap');
+@import url('https://fonts.googleapis.com/css? family=Comfortaa&display=swap');
+
+//$body-font-family: 'Oxygen';
+//$title-font: 'Comfortaa';
+// https://fonts.google.com/
+$body-font-family: 'M PLUS Rounded 1c';
+$title-font: 'M PLUS Rounded 1c';
+.v-application {
+    font-family: $body-font-family, sans-serif !important;
+    .title { // To pin point specific classes of some components
+        font-family: $title-font, sans-serif !important;
+    }
+}

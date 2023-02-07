@@ -16,5 +16,10 @@ mix.js('resources/js/app.js', 'public/js').vue()
     .js('resources/js/views/login.js', 'public/js/views/login.js').vue()
     .js('resources/js/views/products.js', 'public/js/views/products.js').vue()
     .js('resources/js/views/items.js', 'public/js/views/items.js').vue()
-    .sass('resources/sass/app.scss', 'public/css');
+    .sass('resources/sass/app.scss', 'public/css')
 
+mix.webpackConfig({
+    module: {
+
+    }
+})

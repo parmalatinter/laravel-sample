@@ -1,5 +1,6 @@
 <template>
     <v-app>
+
         <v-app-bar
             app
             color="green"
@@ -99,66 +100,70 @@
                 </v-list-item>
             </v-list>
         </v-navigation-drawer>
-
         <v-main>
-            <v-container>
-                <v-row>
-                    <v-col
-                        cols="12"
-                        lg="1"
-                        class="d-none d-lg-block d-xl-block"
-                    >
-                        <v-sheet
-                            rounded="lg"
-                            min-height="70vh"
+            <v-parallax
+                height="100vh"
+                src="https://cdn.vuetifyjs.com/images/parallax/material2.jpg"
+            >
+
+                <v-container>
+                    <v-row>
+                        <v-col
+                            cols="12"
+                            lg="1"
+                            class="d-none d-lg-block d-xl-block"
                         >
-                            <!--  -->
-                        </v-sheet>
-                    </v-col>
-                    <v-col
-                        cols="12"
-                        md="12"
-                        lg="10"
-                    >
-                        <v-sheet
-                            rounded="lg"
-                            min-height="70vh"
-                        >
-                            <v-snackbar
-                                v-model="snackbar"
+                            <v-sheet
+                                rounded="lg"
+                                min-height="70vh"
                             >
-                                {{ text }}
-
-                                <template v-slot:action="{ attrs }">
-                                    <v-btn
-                                        color="pink"
-                                        text
-                                        v-bind="attrs"
-                                        @click="snackbar = false"
-                                    >
-                                        Close
-                                    </v-btn>
-                                </template>
-                            </v-snackbar>
-                            <router-view></router-view>
-                        </v-sheet>
-                    </v-col>
-                    <v-col
-                        cols="12"
-                        lg="1"
-                        class="d-none d-lg-block d-xl-block"
-                    >
-                        <v-sheet
-                            min-height="70vh"
-                            rounded="lg"
+                                <!--  -->
+                            </v-sheet>
+                        </v-col>
+                        <v-col
+                            cols="12"
+                            md="12"
+                            lg="10"
                         >
-                            <!--  -->
-                        </v-sheet>
-                    </v-col>
-                </v-row>
-            </v-container>
-        </v-main>
+                            <v-sheet
+                                rounded="lg"
+                                min-height="70vh"
+                            >
+                                <v-snackbar
+                                    v-model="snackbar"
+                                >
+                                    {{ text }}
 
+                                    <template v-slot:action="{ attrs }">
+                                        <v-btn
+                                            color="pink"
+                                            text
+                                            v-bind="attrs"
+                                            @click="snackbar = false"
+                                        >
+                                            Close
+                                        </v-btn>
+                                    </template>
+                                </v-snackbar>
+                                <router-view></router-view>
+                            </v-sheet>
+                        </v-col>
+                        <v-col
+                            cols="12"
+                            lg="1"
+                            class="d-none d-lg-block d-xl-block"
+                        >
+                            <v-sheet
+                                min-height="70vh"
+                                rounded="lg"
+                            >
+                                <!--  -->
+                            </v-sheet>
+                        </v-col>
+                    </v-row>
+                </v-container>
+            </v-parallax>
+        </v-main>
     </v-app>
 </template>
 

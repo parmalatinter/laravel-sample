@@ -52,30 +52,52 @@
                 </v-list-item-action>
             </v-list-item>
         </v-list>
+        <Editor
+            mode="viewer"
+            ref="editor"
+            :render-config="renderConfig"
+            v-model="text"
+        />
     </v-spacer>
+
 </template>
 
 <script>
-    export default {
-        data: () => ({
-            routes : window.routes,
-            olds: window.olds,
-            params: window.params,
-            colors: [
-                'green',
-                'secondary',
-                'yellow darken-4',
-                'red lighten-2',
-                'orange darken-1',
-            ],
-            cycle: false,
-            slides: [
-                'First',
-                'Second',
-                'Third',
-                'Fourth',
-                'Fifth',
-            ],
-        }),
-    }
+import { Editor } from "vuetify-markdown-editor";
+// CSS for Editor
+import 'vuetify-markdown-editor/dist/vuetify-markdown-editor.css';
+import helloWorld from 'raw-loader!../../markdown/markdown-cheatsheet.md'
+
+export default {
+    components: {
+        Editor
+    },
+    data: () => ({
+        routes : window.routes,
+        olds: window.olds,
+        params: window.params,
+        colors: [
+            'green',
+            'secondary',
+            'yellow darken-4',
+            'red lighten-2',
+            'orange darken-1',
+        ],
+        cycle: false,
+        slides: [
+            'First',
+            'Second',
+            'Third',
+            'Fourth',
+            'Fifth',
+        ],
+        text: helloWorld,
+        renderConfig: {
+            // Mermaid config
+            mermaid: {
+                theme: "dark"
+            }
+        }
+    }),
+}
 </script>

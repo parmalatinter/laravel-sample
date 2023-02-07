@@ -1,1 +1,8 @@
-
+@import url(https://fonts.googleapis.com/css? family=Oxygen:300,400,700&display=swap);
+@import url(https://fonts.googleapis.com/css? family=Comfortaa&display=swap);
+.v-application {
+  font-family: "M PLUS Rounded 1c", sans-serif !important;
+}
+.v-application .title {
+  font-family: "M PLUS Rounded 1c", sans-serif !important;
+}
