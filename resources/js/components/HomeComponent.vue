@@ -1,65 +1,64 @@
 <template>
-    <v-spacer
-        elevation="24"
-        max-width="444"
-        class="mx-auto"
+    <v-card
+        :loading="loading"
+        class="mx-auto my-12"
     >
-        <v-system-bar lights-out></v-system-bar>
-        <v-carousel
-            :continuous="false"
-            :cycle="cycle"
-            :show-arrows="false"
-            hide-delimiter-background
-            delimiter-icon="mdi-minus"
-            height="300"
-        >
-            <v-carousel-item
-                v-for="(slide, i) in slides"
-                :key="i"
+        <v-card-text>
+            <v-carousel
+                :continuous="false"
+                :cycle="cycle"
+                :show-arrows="false"
+                hide-delimiter-background
+                delimiter-icon="mdi-minus"
+                height="300"
             >
-                <v-sheet
-                    :color="colors[i]"
-                    height="100%"
-                    tile
+                <v-carousel-item
+                    v-for="(slide, i) in slides"
+                    :key="i"
                 >
-                    <v-row
-                        class="fill-height"
-                        align="center"
-                        justify="center"
+                    <v-sheet
+                        :color="colors[i]"
+                        height="100%"
+                        tile
                     >
-                        <div class="text-h2">
-                            {{ slide }} Slide
-                        </div>
-                    </v-row>
-                </v-sheet>
-            </v-carousel-item>
-        </v-carousel>
-        <v-list two-line>
-            <v-list-item>
-                <v-list-item-avatar>
-                    <v-img src="https://cdn.vuetifyjs.com/images/john.png"></v-img>
-                </v-list-item-avatar>
-                <v-list-item-content>
-                    <v-list-item-title>John Leider</v-list-item-title>
-                    <v-list-item-subtitle>Author</v-list-item-subtitle>
-                </v-list-item-content>
-                <v-list-item-action>
-                    <v-switch
-                        v-model="cycle"
-                        label="Cycle Slides"
-                        inset
-                    ></v-switch>
-                </v-list-item-action>
-            </v-list-item>
-        </v-list>
-        <Editor
-            mode="viewer"
-            ref="editor"
-            :render-config="renderConfig"
-            v-model="text"
-        />
-    </v-spacer>
-
+                        <v-row
+                            class="fill-height"
+                            align="center"
+                            justify="center"
+                        >
+                            <div class="text-h2">
+                                {{ slide }} Slide
+                            </div>
+                        </v-row>
+                    </v-sheet>
+                </v-carousel-item>
+            </v-carousel>
+            <v-list two-line>
+                <v-list-item>
+                    <v-list-item-avatar>
+                        <v-img src="https://cdn.vuetifyjs.com/images/john.png"></v-img>
+                    </v-list-item-avatar>
+                    <v-list-item-content>
+                        <v-list-item-title>John Leider</v-list-item-title>
+                        <v-list-item-subtitle>Author</v-list-item-subtitle>
+                    </v-list-item-content>
+                    <v-list-item-action>
+                        <v-switch
+                            v-model="cycle"
+                            label="Cycle Slides"
+                            inset
+                        ></v-switch>
+                    </v-list-item-action>
+                </v-list-item>
+            </v-list>
+            <Editor
+                mode="viewer"
+                ref="editor"
+                :render-config="renderConfig"
+                v-model="text"
+            />
+        </v-card-text>
+    </v-card>
 </template>
 
 <script>
@@ -97,7 +96,8 @@ export default {
             mermaid: {
                 theme: "dark"
             }
-        }
+        },
+        loading: false,
     }),
 }
 </script>

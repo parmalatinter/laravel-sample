@@ -1,6 +1,6 @@
 <template>
     <v-app>
-
+        <span class="bg"></span>
         <v-app-bar
             app
             color="green"
@@ -101,68 +101,45 @@
             </v-list>
         </v-navigation-drawer>
         <v-main>
-            <v-parallax
-                height="100vh"
-                src="https://cdn.vuetifyjs.com/images/parallax/material2.jpg"
-            >
+            <v-container>
+                <v-row>
+                    <v-col
+                        cols="12"
+                        lg="1"
+                        class="d-none d-lg-block d-xl-block"
+                    >
+                    </v-col>
+                    <v-col
+                        cols="12"
+                        md="12"
+                        lg="10"
+                    >
+                        <v-snackbar
+                            v-model="snackbar"
+                        >
+                            {{ text }}
 
-                <v-container>
-                    <v-row>
-                        <v-col
-                            cols="12"
-                            lg="1"
-                            class="d-none d-lg-block d-xl-block"
-                        >
-                            <v-sheet
-                                rounded="lg"
-                                min-height="70vh"
-                            >
-                                <!--  -->
-                            </v-sheet>
-                        </v-col>
-                        <v-col
-                            cols="12"
-                            md="12"
-                            lg="10"
-                        >
-                            <v-sheet
-                                rounded="lg"
-                                min-height="70vh"
-                            >
-                                <v-snackbar
-                                    v-model="snackbar"
+                            <template v-slot:action="{ attrs }">
+                                <v-btn
+                                    color="pink"
+                                    text
+                                    v-bind="attrs"
+                                    @click="snackbar = false"
                                 >
-                                    {{ text }}
-
-                                    <template v-slot:action="{ attrs }">
-                                        <v-btn
-                                            color="pink"
-                                            text
-                                            v-bind="attrs"
-                                            @click="snackbar = false"
-                                        >
-                                            Close
-                                        </v-btn>
-                                    </template>
-                                </v-snackbar>
-                                <router-view></router-view>
-                            </v-sheet>
-                        </v-col>
-                        <v-col
-                            cols="12"
-                            lg="1"
-                            class="d-none d-lg-block d-xl-block"
-                        >
-                            <v-sheet
-                                min-height="70vh"
-                                rounded="lg"
-                            >
-                                <!--  -->
-                            </v-sheet>
-                        </v-col>
-                    </v-row>
-                </v-container>
-            </v-parallax>
+                                    Close
+                                </v-btn>
+                            </template>
+                        </v-snackbar>
+                        <router-view></router-view>
+                    </v-col>
+                    <v-col
+                        cols="12"
+                        lg="1"
+                        class="d-none d-lg-block d-xl-block"
+                    >
+                    </v-col>
+                </v-row>
+            </v-container>
         </v-main>
     </v-app>
 </template>

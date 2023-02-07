@@ -6,3 +6,14 @@
 .v-application .title {
   font-family: "M PLUS Rounded 1c", sans-serif !important;
 }
+
+.bg {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-size: cover;
+  background: red url("https://cdn.vuetifyjs.com/images/parallax/material2.jpg") center center;
+  transform: scale(1.1);
+}

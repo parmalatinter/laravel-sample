@@ -106,12 +106,9 @@ var render = function render() {
     attrs: {
       id: "inspire"
     }
-  }, [_c("v-parallax", {
-    attrs: {
-      height: "100vh",
-      src: "https://cdn.vuetifyjs.com/images/parallax/material2.jpg"
-    }
-  }, [_c("v-main", [_c("v-container", {
+  }, [_c("span", {
+    staticClass: "bg"
+  }), _vm._v(" "), _c("v-main", [_c("v-container", {
     attrs: {
       fluid: "",
       "fill-height": ""
@@ -240,7 +237,7 @@ var render = function render() {
     on: {
       click: _vm.validate
     }
-  }, [_vm._v("\n                                        " + _vm._s(_vm.btnTitle) + "\n                                    ")])], 1)], 1)], 1)], 1)], 1)], 1)], 1)], 1)], 1);
+  }, [_vm._v("\n                                    " + _vm._s(_vm.btnTitle) + "\n                                ")])], 1)], 1)], 1)], 1)], 1)], 1)], 1)], 1);
 };
 var staticRenderFns = [];
 render._withStripped = true;
