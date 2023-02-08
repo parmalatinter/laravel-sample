@@ -70,7 +70,7 @@
                                             <span class="markdown-body">
                                                 <Editor
                                                     mode="viewer"
-                                                    ref="editor"
+                                                    ref="editorViewer"
                                                     :render-config="renderConfig"
                                                     v-model="editedItem.content"
                                                     :outline="false"
@@ -295,6 +295,8 @@ export default {
                 }
                 this.close()
             })
+
+            console.log('todo file uploading', this.$refs.editor.files)
         },
         createItem () {
             this.dialog = true
