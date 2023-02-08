@@ -57,6 +57,17 @@ class ItemAPIController extends AppBaseController
         if ($request->get('limit')) {
             $query->limit($request->get('limit'));
         }
+        if ($request->get('sortBy')) {
+            $query->orderBy($request->get('sortBy'));
+        }
+        if ($request->get('search')) {
+            $query->where(function($query) use ($request) {
+                $model = $query->getModel();
+                foreach ($model->fillable as $column){
+                    $query->orWhere($column, 'LIKE', '%'.$request->get('search').'%');
+                }
+            });
+        }
 
         $items = $query->get();
 

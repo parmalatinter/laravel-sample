@@ -193,13 +193,13 @@ export default {
         loadItems(_page = null) {
             this.tableLoading= true;
             this.items = []
-            let { page, itemsPerPage } = this.options;
+            let { page, itemsPerPage, sortBy } = this.options;
             if(_page){
                 page = _page
             }
             const skip = (page-1) * itemsPerPage
             axios.get(
-                `${this.routes['api.items.index'].uri}?skip=${skip}&limit=${itemsPerPage}`,
+                `${this.routes['api.items.index'].uri}?skip=${skip}&limit=${itemsPerPage}&sortBy=${sortBy}`,
                 { headers: { Authorization: "Bearer " + this.csrfToken }}
             )
                 .then((response) => {

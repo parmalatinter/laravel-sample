@@ -3,6 +3,15 @@
         :loading="loading"
         class="mx-auto my-12"
     >
+        <v-card-title>
+            <v-text-field
+                v-model="options.search"
+                append-icon="mdi-magnify"
+                label="Search"
+                single-line
+                hide-details
+            ></v-text-field>
+        </v-card-title>
         <v-data-table
             :page="page"
             :headers="headers"
@@ -15,6 +24,7 @@
             loading-text="Now loading..."
             fixed-header
             height="50vh"
+            :search="options.search"
         >
             <template v-slot:top>
                 <v-toolbar
@@ -184,7 +194,7 @@ export default {
             name: '',
             content: '',
         },
-        options: {},
+        options: {search: ''},
         tableLoading:true,
         loading: false,
         renderConfig: {
@@ -232,13 +242,17 @@ export default {
         loadItems(_page = null) {
             this.tableLoading= true;
             this.items = []
-            let { page, itemsPerPage } = this.options;
+            let { page, itemsPerPage, sortBy, search } = this.options;
+            page = page ?? 1
+            itemsPerPage = itemsPerPage ?? 10
+            sortBy = sortBy ?? ''
+            search = search ?? ''
             if(_page){
                 page = _page
             }
             const skip = (page-1) * itemsPerPage
             axios.get(
-                `${this.routes['api.blogs.index'].uri}?skip=${skip}&limit=${itemsPerPage}`,
+                `${this.routes['api.blogs.index'].uri}?skip=${skip}&limit=${itemsPerPage}&sortBy=${sortBy}&search=${search}`,
                 { headers: { Authorization: "Bearer " + this.csrfToken }}
             )
                 .then((response) => {
