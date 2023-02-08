@@ -257,8 +257,6 @@ export default {
                 }
                 this.close()
             })
-
-            console.log('todo file uploading', this.$refs.editor.files)
         },
         createItem () {
             this.dialog = true
