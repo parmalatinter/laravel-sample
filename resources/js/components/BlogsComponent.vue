@@ -27,7 +27,6 @@
                         vertical
                     ></v-divider>
                     <v-spacer></v-spacer>
-
                     <v-dialog
                         v-model="dialog"
                         scrollable
@@ -179,8 +178,10 @@ export default {
         editedIndex: -1,
         editedItem: {
             name: '',
+            content: '',
         },
         defaultItem: {
+            name: '',
             content: '',
         },
         options: {},
