@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Requests\API\CreateItemAPIRequest;
-use App\Http\Requests\API\UpdateItemAPIRequest;
-use App\Models\Item;
+use App\Http\Requests\API\CreateBlogAPIRequest;
+use App\Http\Requests\API\UpdateBlogAPIRequest;
+use App\Models\Blog;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
@@ -16,14 +16,14 @@ use App\Http\Controllers\AppBaseController;
  * https://www.youtube.com/watch?v=W58PIXo0C40
  */
 
-class ItemAPIController extends AppBaseController
+class BlogAPIController extends AppBaseController
 {
     /**
      * @OA\Get(
-     *      path="/items",
-     *      summary="getItemList",
-     *      tags={"Item"},
-     *      description="Get all Items",
+     *      path="/blogs",
+     *      summary="getBlogList",
+     *      tags={"Blog"},
+     *      description="Get all Blogs",
      *      @OA\Response(
      *          response=200,
      *          description="successful operation",
@@ -36,7 +36,7 @@ class ItemAPIController extends AppBaseController
      *              @OA\Property(
      *                  property="data",
      *                  type="array",
-     *                  @OA\Items(ref="#/components/schemas/Item")
+     *                  @OA\Items(ref="#/components/schemas/Blog")
      *              ),
      *              @OA\Property(
      *                  property="message",
@@ -48,8 +48,7 @@ class ItemAPIController extends AppBaseController
      */
     public function index(Request $request): JsonResponse
     {
-        $query = Item::query();
-        $totalRowCount = Item::query()->count();
+        $query = Blog::query();
 
         if ($request->get('search')) {
             $query->where(function($query) use ($request) {
@@ -76,20 +75,20 @@ class ItemAPIController extends AppBaseController
         $items = $query->get();
 
         return $this->sendResponse([
-                'rows' => $items->toArray(),
-                'totalRowCount' => $totalRowCount
-            ], 'Items retrieved successfully');
+            'rows' => $items->toArray(),
+            'totalRowCount' => $totalRowCount
+        ], 'Blogs retrieved successfully');
     }
 
     /**
      * @OA\Post(
-     *      path="/items",
-     *      summary="createItem",
-     *      tags={"Item"},
-     *      description="Create Item",
+     *      path="/blogs",
+     *      summary="createBlog",
+     *      tags={"Blog"},
+     *      description="Create Blog",
      *      @OA\RequestBody(
      *        required=true,
-     *        @OA\JsonContent(ref="#/components/schemas/Item")
+     *        @OA\JsonContent(ref="#/components/schemas/Blog")
      *      ),
      *      @OA\Response(
      *          response=200,
@@ -102,7 +101,7 @@ class ItemAPIController extends AppBaseController
      *              ),
      *              @OA\Property(
      *                  property="data",
-     *                  ref="#/components/schemas/Item"
+     *                  ref="#/components/schemas/Blog"
      *              ),
      *              @OA\Property(
      *                  property="message",
@@ -112,25 +111,25 @@ class ItemAPIController extends AppBaseController
      *      )
      * )
      */
-    public function store(CreateItemAPIRequest $request): JsonResponse
+    public function store(CreateBlogAPIRequest $request): JsonResponse
     {
         $input = $request->all();
 
-        /** @var Item $item */
-        $item = Item::create($input);
+        /** @var Blog $blog */
+        $blog = Blog::create($input);
 
-        return $this->sendResponse($item->toArray(), 'Item saved successfully');
+        return $this->sendResponse($blog->toArray(), 'Blog saved successfully');
     }
 
     /**
      * @OA\Get(
-     *      path="/items/{id}",
-     *      summary="getItemItem",
-     *      tags={"Item"},
-     *      description="Get Item",
+     *      path="/blogs/{id}",
+     *      summary="getBlogItem",
+     *      tags={"Blog"},
+     *      description="Get Blog",
      *      @OA\Parameter(
      *          name="id",
-     *          description="id of Item",
+     *          description="id of Blog",
      *           @OA\Schema(
      *             type="integer"
      *          ),
@@ -148,7 +147,7 @@ class ItemAPIController extends AppBaseController
      *              ),
      *              @OA\Property(
      *                  property="data",
-     *                  ref="#/components/schemas/Item"
+     *                  ref="#/components/schemas/Blog"
      *              ),
      *              @OA\Property(
      *                  property="message",
@@ -160,25 +159,25 @@ class ItemAPIController extends AppBaseController
      */
     public function show($id): JsonResponse
     {
-        /** @var Item $item */
-        $item = Item::find($id);
+        /** @var Blog $blog */
+        $blog = Blog::find($id);
 
-        if (empty($item)) {
-            return $this->sendError('Item not found');
+        if (empty($blog)) {
+            return $this->sendError('Blog not found');
         }
 
-        return $this->sendResponse($item->toArray(), 'Item retrieved successfully');
+        return $this->sendResponse($blog->toArray(), 'Blog retrieved successfully');
     }
 
     /**
      * @OA\Put(
-     *      path="/items/{id}",
-     *      summary="updateItem",
-     *      tags={"Item"},
-     *      description="Update Item",
+     *      path="/blogs/{id}",
+     *      summary="updateBlog",
+     *      tags={"Blog"},
+     *      description="Update Blog",
      *      @OA\Parameter(
      *          name="id",
-     *          description="id of Item",
+     *          description="id of Blog",
      *           @OA\Schema(
      *             type="integer"
      *          ),
@@ -187,7 +186,7 @@ class ItemAPIController extends AppBaseController
      *      ),
      *      @OA\RequestBody(
      *        required=true,
-     *        @OA\JsonContent(ref="#/components/schemas/Item")
+     *        @OA\JsonContent(ref="#/components/schemas/Blog")
      *      ),
      *      @OA\Response(
      *          response=200,
@@ -200,7 +199,7 @@ class ItemAPIController extends AppBaseController
      *              ),
      *              @OA\Property(
      *                  property="data",
-     *                  ref="#/components/schemas/Item"
+     *                  ref="#/components/schemas/Blog"
      *              ),
      *              @OA\Property(
      *                  property="message",
@@ -210,30 +209,30 @@ class ItemAPIController extends AppBaseController
      *      )
      * )
      */
-    public function update($id, UpdateItemAPIRequest $request): JsonResponse
+    public function update($id, UpdateBlogAPIRequest $request): JsonResponse
     {
-        /** @var Item $item */
-        $item = Item::find($id);
+        /** @var Blog $blog */
+        $blog = Blog::find($id);
 
-        if (empty($item)) {
-            return $this->sendError('Item not found');
+        if (empty($blog)) {
+            return $this->sendError('Blog not found');
         }
 
-        $item->fill($request->all());
-        $item->save();
+        $blog->fill($request->all());
+        $blog->save();
 
-        return $this->sendResponse($item->toArray(), 'Item updated successfully');
+        return $this->sendResponse($blog->toArray(), 'Blog updated successfully');
     }
 
     /**
      * @OA\Delete(
-     *      path="/items/{id}",
-     *      summary="deleteItem",
-     *      tags={"Item"},
-     *      description="Delete Item",
+     *      path="/blogs/{id}",
+     *      summary="deleteBlog",
+     *      tags={"Blog"},
+     *      description="Delete Blog",
      *      @OA\Parameter(
      *          name="id",
-     *          description="id of Item",
+     *          description="id of Blog",
      *           @OA\Schema(
      *             type="integer"
      *          ),
@@ -263,15 +262,15 @@ class ItemAPIController extends AppBaseController
      */
     public function destroy($id): JsonResponse
     {
-        /** @var Item $item */
-        $item = Item::find($id);
+        /** @var Blog $blog */
+        $blog = Blog::find($id);
 
-        if (empty($item)) {
-            return $this->sendError('Item not found');
+        if (empty($blog)) {
+            return $this->sendError('Blog not found');
         }
 
-        $item->delete();
+        $blog->delete();
 
-        return $this->sendSuccess('Item deleted successfully');
+        return $this->sendSuccess('Blog deleted successfully');
     }
 }
