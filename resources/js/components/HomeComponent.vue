@@ -51,12 +51,15 @@
                     </v-list-item-action>
                 </v-list-item>
             </v-list>
+            <span
+                class="markdown-body">
             <Editor
                 mode="viewer"
                 ref="editor"
                 :render-config="renderConfig"
                 v-model="text"
             />
+                </span>
         </v-card-text>
     </v-card>
 </template>
@@ -64,7 +67,7 @@
 <script>
 import { Editor } from "vuetify-markdown-editor";
 // CSS for Editor
-import 'vuetify-markdown-editor/dist/vuetify-markdown-editor.css';
+// import 'vuetify-markdown-editor/dist/vuetify-markdown-editor.css';
 import helloWorld from 'raw-loader!../../markdown/markdown-cheatsheet.md'
 
 export default {
@@ -95,7 +98,11 @@ export default {
             // Mermaid config
             mermaid: {
                 theme: "dark"
-            }
+            },
+            // markdown-it-code-copy config
+            codeCopy: {
+                buttonClass: 'v-icon theme--dark'
+            },
         },
         loading: false,
     }),
