@@ -3,15 +3,6 @@
         :loading="loading"
         class="mx-auto my-12"
     >
-        <v-card-title>
-            <v-text-field
-                v-model="options.search"
-                append-icon="mdi-magnify"
-                label="Search"
-                single-line
-                hide-details
-            ></v-text-field>
-        </v-card-title>
         <v-data-table
             :page="page"
             :headers="headers"
@@ -116,13 +107,22 @@
                             <v-card-title class="text-h5">Are you sure you want to delete this blog?</v-card-title>
                             <v-card-actions>
                                 <v-spacer></v-spacer>
-                                <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
+                                <v-btn color="blue darken-1" text @click="close">Cancel</v-btn>
                                 <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
                                 <v-spacer></v-spacer>
                             </v-card-actions>
                         </v-card>
                     </v-dialog>
                 </v-toolbar>
+                <v-card-title>
+                    <v-text-field
+                        v-model="options.search"
+                        append-icon="mdi-magnify"
+                        label="Search"
+                        single-line
+                        hide-details
+                    ></v-text-field>
+                </v-card-title>
             </template>
             <template v-slot:item.actions="{ item }">
                 <v-icon
@@ -242,17 +242,17 @@ export default {
         loadItems(_page = null) {
             this.tableLoading= true;
             this.items = []
-            let { page, itemsPerPage, sortBy, search } = this.options;
-            page = page ?? 1
-            itemsPerPage = itemsPerPage ?? 10
-            sortBy = sortBy ?? ''
-            search = search ?? ''
+            let page = this.options.page ?? 1
+            let itemsPerPage = this.options.itemsPerPage ?? 10
+            let sortBy = this.options.sortBy ?? ''
+            let search = this.options.search ?? ''
+            let url = `${this.routes['api.blogs.index'].uri}?skip=${skip}&limit=${itemsPerPage}&sortBy=${sortBy}&search=${search}`
             if(_page){
                 page = _page
             }
             const skip = (page-1) * itemsPerPage
             axios.get(
-                `${this.routes['api.blogs.index'].uri}?skip=${skip}&limit=${itemsPerPage}&sortBy=${sortBy}&search=${search}`,
+                url,
                 { headers: { Authorization: "Bearer " + this.csrfToken }}
             )
                 .then((response) => {
@@ -340,6 +340,7 @@ export default {
         },
         close () {
             this.dialog = false
+            this.dialogDelete = false
             this.$nextTick(() => {
                 this.editedItem = Object.assign({}, this.defaultItem)
                 this.editedIndex = -1
@@ -350,7 +351,7 @@ export default {
             this.$nextTick(() => {
 
                 const method = this.routes['api.blogs.destroy'].methods[0]
-                const url = this.routes['api.blogs.destroy'].uri.replace('{item}', this.editedItem.id)
+                const url = this.routes['api.blogs.destroy'].uri.replace('{blog}', this.editedItem.id)
 
                 axios[method.toLowerCase()](url,
                     { headers: {
