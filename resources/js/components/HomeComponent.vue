@@ -51,15 +51,14 @@
                     </v-list-item-action>
                 </v-list-item>
             </v-list>
-            <span
-                class="markdown-body">
-            <Editor
-                mode="viewer"
-                ref="editor"
-                :render-config="renderConfig"
-                v-model="text"
-            />
-                </span>
+            <span class="markdown-body">
+                <Editor
+                    mode="viewer"
+                    ref="editor"
+                    :render-config="renderConfig"
+                    v-model="text"
+                />
+            </span>
         </v-card-text>
     </v-card>
 </template>

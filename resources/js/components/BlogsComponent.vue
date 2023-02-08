@@ -20,15 +20,17 @@
                 <v-toolbar
                     flat
                 >
-                    <v-toolbar-title>My CRUD</v-toolbar-title>
+                    <v-toolbar-title>Blogs</v-toolbar-title>
                     <v-divider
                         class="mx-4"
                         inset
                         vertical
                     ></v-divider>
                     <v-spacer></v-spacer>
+
                     <v-dialog
                         v-model="dialog"
+                        scrollable
                         max-width="500px"
                     >
                         <template v-slot:activator="{ on, attrs }">
@@ -36,10 +38,9 @@
                                 color="primary"
                                 dark
                                 class="mb-2"
-                                v-bind="attrs"
-                                v-on="on"
+                                @click="createItem()"
                             >
-                                New Item
+                                New Blog
                             </v-btn>
                         </template>
                         <v-card>
@@ -52,23 +53,35 @@
                                     <v-row>
                                         <v-col
                                             cols="12"
-                                            sm="6"
-                                            md="4"
                                         >
                                             <v-text-field
                                                 v-model="editedItem.name"
                                                 label="Blog name"
+                                                :disabled="isDisableInput()"
                                             ></v-text-field>
-                                            <v-text-field
+                                            <Editor v-if="isDisableInput() === false"
+                                                mode="editor"
+                                                ref="editor"
+                                                :render-config="renderConfig"
                                                 v-model="editedItem.content"
-                                                label="Blog content"
-                                            ></v-text-field>
+                                                :emoji="false"
+                                                outline
+                                            />
+                                            <span class="markdown-body">
+                                                <Editor
+                                                    mode="viewer"
+                                                    ref="editor"
+                                                    :render-config="renderConfig"
+                                                    v-model="editedItem.content"
+                                                    :outline="false"
+                                                />
+                                            </span>
                                         </v-col>
                                     </v-row>
                                 </v-container>
                             </v-card-text>
 
-                            <v-card-actions>
+                            <v-card-actions v-if="isDisableInput() === false">
                                 <v-spacer></v-spacer>
                                 <v-btn
                                     color="blue darken-1"
@@ -87,9 +100,11 @@
                             </v-card-actions>
                         </v-card>
                     </v-dialog>
-                    <v-dialog v-model="dialogDelete" max-width="500px">
+                    <v-dialog
+                        v-model="dialogDelete"
+                        max-width="500px">
                         <v-card>
-                            <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
+                            <v-card-title class="text-h5">Are you sure you want to delete this blog?</v-card-title>
                             <v-card-actions>
                                 <v-spacer></v-spacer>
                                 <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
@@ -101,6 +116,13 @@
                 </v-toolbar>
             </template>
             <template v-slot:item.actions="{ item }">
+                <v-icon
+                    small
+                    class="mr-2"
+                    @click="previewItem(item)"
+                >
+                    mdi-eye
+                </v-icon>
                 <v-icon
                     small
                     class="mr-2"
@@ -121,14 +143,19 @@
 
 <script>
 
+import { Editor } from "vuetify-markdown-editor";
 import axios from "axios";
 
 export default {
+    components: {
+        Editor
+    },
     data: () => ({
         routes : window.routes,
         csrfToken : window.csrfToken,
         dialog: false,
         dialogDelete: false,
+        mode : '',
         headers: [
             {
                 text: 'Name',
@@ -159,10 +186,27 @@ export default {
         options: {},
         tableLoading:true,
         loading: false,
+        renderConfig: {
+            // Mermaid config
+            mermaid: {
+                theme: "dark"
+            },
+            // markdown-it-code-copy config
+            codeCopy: {
+                buttonClass: 'v-icon theme--dark'
+            },
+        },
     }),
     computed: {
         formTitle () {
-            return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
+            switch (this.mode){
+                case 'create':
+                    return 'New Blog'
+                case 'edit':
+                    return 'Edit Blog'
+                case 'preview':
+                    return 'Preview Blog'
+            }
         },
     },
     watch: {
@@ -179,7 +223,6 @@ export default {
             deep: true
         },
     },
-
     created () {
         this.loadItems()
     },
@@ -207,6 +250,15 @@ export default {
                     console.log(error)
                 })
         },
+        isDisableInput () {
+            switch (this.mode){
+                case 'create':
+                case 'edit':
+                    return false
+                default:
+                    return true
+            }
+        },
         setLast(){
             this.lastPage = Math.ceil(this.totalRowCount / this.options.itemsPerPage)
         },
@@ -221,7 +273,7 @@ export default {
             if (item.id) {
                 // if the item has an id, we're updating an existing item
                 method = this.routes['api.blogs.update'].methods[0]
-                url = this.routes['api.blogs.update'].uri.replace('{item}', item.id)
+                url = this.routes['api.blogs.update'].uri.replace('{blog}', item.id)
             }
 
             // save the record
@@ -244,15 +296,27 @@ export default {
                 this.close()
             })
         },
+        createItem () {
+            this.dialog = true
+            this.mode = 'create'
+        },
+        previewItem (item) {
+            this.editedIndex = this.items.indexOf(item)
+            this.editedItem = Object.assign({}, item)
+            this.dialog = true
+            this.mode = 'preview'
+        },
         editItem (item) {
             this.editedIndex = this.items.indexOf(item)
             this.editedItem = Object.assign({}, item)
             this.dialog = true
+            this.mode = 'edit'
         },
         deleteItem (item) {
             this.editedIndex = this.items.indexOf(item)
             this.editedItem = Object.assign({}, item)
             this.dialogDelete = true
+            this.mode = 'delete'
         },
         deleteItemConfirm () {
             this.closeDelete()
