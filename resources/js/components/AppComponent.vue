@@ -167,6 +167,11 @@ export default {
                 icon: 'mdi-account-cog'
             },
             {
+                title: 'Blogs',
+                to: '/blogs',
+                icon: 'mdi-post'
+            },
+            {
                 title: 'Datatables',
                 to: '/datatables',
                 icon: 'mdi-table'

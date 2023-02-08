@@ -129,7 +129,7 @@ export default {
             {
                 text: 'Name',
                 align: 'start',
-                sortable: false,
+                sortable: true,
                 value: 'name',
             },
             { text: 'Actions', value: 'actions', sortable: false },
@@ -184,7 +184,7 @@ export default {
             }
             const skip = (page-1) * itemsPerPage
             axios.get(
-                `api/items?skip=${skip}&limit=${itemsPerPage}`,
+                `${this.routes['api.items.index'].uri}?skip=${skip}&limit=${itemsPerPage}`,
                 { headers: { Authorization: "Bearer " + this.csrfToken }}
             )
                 .then((response) => {
@@ -204,27 +204,25 @@ export default {
             /* this is used for both creating and updating API records
              the default method is POST for creating a new item */
 
-            let method = "post"
-            let url = `api/items`
-            let id = item.id
+            let method = this.routes['api.items.store'].methods[0]
+            let url = this.routes['api.items.store'].uri
 
             // airtable API needs the data to be placed in fields object
-
-            if (id) {
+            if (item.id) {
                 // if the item has an id, we're updating an existing item
-                method = "patch"
-                url = `api/items/${id}`
+                method = this.routes['api.items.update'].methods[0]
+                url = this.routes['api.items.update'].uri.replace('{item}', item.id)
             }
 
             // save the record
-            axios[method](url,
+            axios[method.toLowerCase()](url,
                 item,
                 { headers: { Authorization: "Bearer " + this.csrfToken }}
             ).then((response) => {
                 if (response.data) {
                     // add new item to state
                     this.editedItem = response.data.data
-                    if (!id) {
+                    if (!item.id) {
                         this.totalRowCount++;
                         this.setLast();
                         this.loadItems(this.lastPage)
@@ -261,10 +259,10 @@ export default {
             let method = "delete"
             this.$nextTick(() => {
 
-                const id = this.editedItem.id
-                const url = `api/items/${id}`
+                const method = this.routes['api.items.destroy'].methods[0]
+                const url = this.routes['api.items.destroy'].uri.replace('{item}', this.editedItem.id)
 
-                axios[method](url,
+                axios[method.toLowerCase()](url,
                     { headers: {
                             Authorization: "Bearer " + this.csrfToken,
                             "Content-Type": "application/json"
