@@ -32,6 +32,56 @@
                     required
                 ></v-select>
 
+                <v-row justify="center">
+                    <v-col
+                        class="d-flex child-flex"
+                        cols="8"
+                    >
+                        <video controls>
+                            <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
+                        </video>
+                    </v-col>
+                </v-row>
+
+                <v-row>
+                    <v-col
+                        v-for="(image, i) in images"
+                        :key="n"
+                        class="d-flex child-flex"
+                        cols="4"
+                    >
+                        <v-img
+                            :src="getImageUrl(image)"
+                            lazy-src="https://picsum.photos/id/11/100/60"
+                            aspect-ratio="1"
+                            class="grey lighten-2"
+                        >
+                            <template v-slot:placeholder>
+                                <v-row
+                                    class="fill-height ma-0"
+                                    align="center"
+                                    justify="center"
+                                >
+                                    <v-progress-circular
+                                        indeterminate
+                                        color="grey lighten-5"
+                                    ></v-progress-circular>
+                                </v-row>
+                            </template>
+                        </v-img>
+                    </v-col>
+                </v-row>
+
+                <v-file-input
+                    v-model="images"
+                    counter
+                    show-size
+                    small-chips
+                    truncate-length="24"
+                    label="Files"
+                    multiple
+                ></v-file-input>
+
                 <v-checkbox
                     v-model="checkbox"
                     :rules="[v => !!v || 'You must agree to continue!']"
@@ -85,6 +135,7 @@ export default {
             v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
         ],
         select: null,
+        images: null,
         items: [
             'Item 1',
             'Item 2',
@@ -92,7 +143,7 @@ export default {
             'Item 4',
         ],
         checkbox: false,
-        loading: false,
+        loading: false
     }),
 
     methods: {
@@ -105,6 +156,10 @@ export default {
         resetValidation () {
             this.$refs.form.resetValidation()
         },
+        getImageUrl(image){
+            if(image===null) return
+            return URL.createObjectURL(image)
+        }
     },
 }
 </script>
