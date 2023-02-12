@@ -1,5 +1,6 @@
 <?php
 
+use Dcblogdev\Dropbox\Facades\Dropbox;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -39,3 +40,17 @@ Route::post(
     'generator_builder/generate-from-file',
     '\InfyOm\GeneratorBuilder\Controllers\GeneratorBuilderController@generateFromFile'
 )->name('io_generator_builder_generate_from_file');
+
+Route::get('dropbox', function(){
+    return Dropbox::post('users/get_current_account');
+});
+
+Route::get('dropbox/connect', function(){
+    return Dropbox::connect();
+});
+
+Route::get('dropbox/disconnect', function(){
+    return Dropbox::disconnect('app/dropbox');
+});
+
+Route::get('dropbox/test', [App\Http\Controllers\DropBoxController::class, 'index'])->name('dropBox');
