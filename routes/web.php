@@ -42,7 +42,12 @@ Route::post(
 )->name('io_generator_builder_generate_from_file');
 
 Route::get('dropbox', function(){
-    return Dropbox::post('users/get_current_account');
+    if (! Dropbox::isConnected()) {
+        return redirect(env('DROPBOX_OAUTH_URL'));
+    } else {
+        //display your details
+        return Dropbox::post('users/get_current_account');
+    }
 });
 
 Route::get('dropbox/connect', function(){

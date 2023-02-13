@@ -27,7 +27,8 @@ class DropBoxController extends Controller
      */
     public function index()
     {
-
-        return Dropbox::files()->listContents();
+        return Dropbox::files()->getThumbnail('test/');
+        //return Dropbox::files()->getThumbnailBat('test/');
+        //return Dropbox::files()->listContents();
     }
 }
