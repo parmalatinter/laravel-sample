@@ -132,7 +132,6 @@ class DropBoxCustom
                 }
             }
 
-
             $contents = json_decode($response->getBody()->getContents());
 
             $files = [];
