@@ -137,7 +137,7 @@ class DropBoxCustom
 
             $files = [];
             foreach ($contents->entries as $key => $entry){
-                if($entry->failure){
+                if(property_exists($entry, 'failure')){
                     $path = $pathList[$key];
                     throw new Exception("File is undefined. path :{$path}");
                 }
