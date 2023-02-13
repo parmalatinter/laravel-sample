@@ -30,6 +30,6 @@ class DropBoxController extends Controller
     {
         // return DropBoxCustom::getThumbnail("/test/white_cub.PNG");
         $files = DropBoxCustom::getThumbnailBat(["/test/white_cub.PNG", "/test/DSCN0289.JPG"]);
-        return $files[1];
+        return $files[0]['file'];
     }
 }

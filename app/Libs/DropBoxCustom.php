@@ -93,7 +93,7 @@ class DropBoxCustom
      * @param string $size
      * @param string $destFolder
      *
-     * @return array
+     * @return array [['file' => $file, 'fileMetadata' => $fileMetadata]]
      * @throws GuzzleException
      * @throws Exception
      */
@@ -144,7 +144,10 @@ class DropBoxCustom
                 $thumbnail = $entry->thumbnail;
                 $fileMetadata = $entry->metadata;
                 file_put_contents($destFolder.$fileMetadata->name, base64_decode($thumbnail));
-                $files[] = response()->download($destFolder.$fileMetadata->name, $fileMetadata->name)->deleteFileAfterSend();
+                $files[] = [
+                    'file' => response()->download($destFolder.$fileMetadata->name, $fileMetadata->name)->deleteFileAfterSend(),
+                    'fileMetadata' => $fileMetadata
+                ];
             }
 
             return $files;
