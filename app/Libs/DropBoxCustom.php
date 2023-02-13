@@ -9,7 +9,15 @@ use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
+/**
+ * Class DropBoxCustom
+ *
+ * @see custom from \Dcblogdev\Dropbox\Dropbox
+ *
+ * @package App\Libs
+ */
 class DropBoxCustom
 {
     static private function forceStartingSlash($string)
@@ -22,10 +30,18 @@ class DropBoxCustom
     }
 
     /**
+     * get thumbnail
+     *
+     * @param string $path
+     * @param string $format
+     * @param string $size
+     * @param string $destFolder
+     *
+     * @return BinaryFileResponse
      * @throws GuzzleException
      * @throws Exception
      */
-    public static function getThumbnail($path, $destFolder = '')
+    public static function getThumbnail(string $path, string $format = "jpeg", string $size = "w64h64", $destFolder = ''): BinaryFileResponse
     {
         $path = self::forceStartingSlash($path);
 
@@ -36,9 +52,9 @@ class DropBoxCustom
                 'headers' => [
                     'Authorization' => 'Bearer ' . Dropbox::getAccessToken(),
                     'Dropbox-API-Arg' => json_encode([
-                        "format"=> "jpeg",
+                        "format"=> $format,
                         "mode" => "strict",
-                        "size" => "w64h64",
+                        "size" => $size,
                         "resource" => [
                             ".tag" => "path",
                             "path" => $path,
@@ -70,10 +86,18 @@ class DropBoxCustom
     }
 
     /**
+     * get thumbnail bat
+     *
+     * @param array  $pathList
+     * @param string $format
+     * @param string $size
+     * @param string $destFolder
+     *
+     * @return array
      * @throws GuzzleException
      * @throws Exception
      */
-    public static function getThumbnailBat(array $pathList, string $format = "jpeg", string $size = "w64h64", string $destFolder = '')
+    public static function getThumbnailBat(array $pathList, string $format = "jpeg", string $size = "w64h64", string $destFolder = ''): array
     {
         $entries = [];
         foreach ($pathList as $path){
