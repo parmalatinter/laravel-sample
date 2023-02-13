@@ -6,6 +6,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\AppBaseController;
 use App\Libs\DropBoxCustom;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\JsonResponse;
 
 class DropBoxController extends AppBaseController
@@ -25,6 +26,7 @@ class DropBoxController extends AppBaseController
      * index of files of thumbnail.
      *
      * @return JsonResponse
+     * @throws GuzzleException
      */
     public function index()
     {
