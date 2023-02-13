@@ -46,8 +46,9 @@ class DropBoxCustom
                     ])
                 ]
             ]);
-            $header = ['name' => 'test.jpeg'];
+            $header = json_decode($response->getHeader('Dropbox-Api-Result')[0], true);
             $body = $response->getBody()->getContents();
+            $fileMetadata = $header['file_metadata'];
 
             if (empty($destFolder)){
                 $destFolder = 'dropbox-temp';
@@ -57,9 +58,9 @@ class DropBoxCustom
                 }
             }
 
-            file_put_contents($destFolder.$header['name'], $body);
+            file_put_contents($destFolder.$fileMetadata['name'], $body);
 
-            return response()->download($destFolder.$header['name'], $header['name'])->deleteFileAfterSend();
+            return response()->download($destFolder.$fileMetadata['name'], $fileMetadata['name'])->deleteFileAfterSend();
 
         } catch (ClientException $e) {
             throw new Exception($e->getResponse()->getBody()->getContents());
