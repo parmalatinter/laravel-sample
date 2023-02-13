@@ -29,7 +29,7 @@ class DropBoxController extends Controller
     public function index()
     {
         // return DropBoxCustom::getThumbnail("/test/white_cub.PNG");
-        $files = DropBoxCustom::getThumbnailBat(["/texxst/white_cub.PNG", "/test/DSCN0289.JPG"]);
+        $files = DropBoxCustom::getThumbnailBat(["/test/white_cub.PNG", "/test/DSCN0289.JPG"]);
         return $files[1];
     }
 }
