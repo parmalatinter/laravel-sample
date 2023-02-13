@@ -73,9 +73,17 @@ class DropBoxCustom
      * @throws GuzzleException
      * @throws Exception
      */
-    public static function getThumbnailBat($path)
+    public static function getThumbnailBat(array $pathList, string $format = "jpeg", string $size = "w64h64", string $destFolder = '')
     {
-        $path = self::forceStartingSlash($path);
+        $entries = [];
+        foreach ($pathList as $path){
+            $entries[] = [
+                "format"=> $format,
+                "mode" => "strict",
+                "path" => self::forceStartingSlash($path),
+                "size" => $size
+            ];
+        }
 
         try {
             $client = new Client;
@@ -87,18 +95,31 @@ class DropBoxCustom
                 ],
                 'json' =>
                     [
-                        "entries" =>[
-                            [
-                                "format"=> "jpeg",
-                                "mode" => "strict",
-                                "path" => $path,
-                                "size" => "w64h64"
-                            ]]
+                        "entries" => $entries
                     ]
+                ]
+            );
 
-            ]);
+            if (empty($destFolder)){
+                $destFolder = 'dropbox-temp';
 
-            return $response->getBody()->getContents();
+                if (! is_dir($destFolder)) {
+                    mkdir($destFolder);
+                }
+            }
+
+
+            $contents = json_decode($response->getBody()->getContents());
+
+            $files = [];
+            foreach ($contents->entries as $entry){
+                $thumbnail = $entry->thumbnail;
+                $fileMetadata = $entry->metadata;
+                file_put_contents($destFolder.$fileMetadata->name, base64_decode($thumbnail));
+                $files[] = response()->download($destFolder.$fileMetadata->name, $fileMetadata->name)->deleteFileAfterSend();
+            }
+
+            return $files;
 
         } catch (ClientException $e) {
             throw new Exception($e->getResponse()->getBody()->getContents());
