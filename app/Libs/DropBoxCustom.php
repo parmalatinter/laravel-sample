@@ -41,7 +41,7 @@ class DropBoxCustom
      * @throws GuzzleException
      * @throws Exception
      */
-    public static function getThumbnail(string $path, string $format = "jpeg", string $size = "w64h64", $destFolder = ''): BinaryFileResponse
+    public static function getThumbnail(string $path, string $format = "jpeg", string $size = "w128h128", string $destFolder = ''): BinaryFileResponse
     {
         $path = self::forceStartingSlash($path);
 
@@ -97,7 +97,7 @@ class DropBoxCustom
      * @throws GuzzleException
      * @throws Exception
      */
-    public static function getThumbnailBat(array $pathList, string $format = "jpeg", string $size = "w64h64", string $destFolder = ''): array
+    public static function getThumbnailBat(array $pathList, string $format = "jpeg", string $size = "w128h128", string $destFolder = ''): array
     {
         $entries = [];
         foreach ($pathList as $path){
