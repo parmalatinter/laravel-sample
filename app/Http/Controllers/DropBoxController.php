@@ -4,6 +4,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Libs\DropBoxCustom;
 use Dcblogdev\Dropbox\Facades\Dropbox;
 use Illuminate\Contracts\Support\Renderable;
 
@@ -23,12 +24,11 @@ class DropBoxController extends Controller
     /**
      * Show the application dashboard.
      *
-     * @return Renderable
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
      */
     public function index()
     {
-        return Dropbox::files()->getThumbnail('test/');
-        //return Dropbox::files()->getThumbnailBat('test/');
-        //return Dropbox::files()->listContents();
+        return DropBoxCustom::getThumbnail("/test/white_cub.PNG");
+        //return DropBoxCustom::getThumbnailBat("/test/white_cub.PNG");
     }
 }
