@@ -136,7 +136,12 @@ class DropBoxCustom
             $contents = json_decode($response->getBody()->getContents());
 
             $files = [];
-            foreach ($contents->entries as $entry){
+            foreach ($contents->entries as $key => $entry){
+                if($entry->failure){
+                    $path = $pathList[$key];
+                    throw new Exception("File is undefined. path :{$path}");
+                }
+
                 $thumbnail = $entry->thumbnail;
                 $fileMetadata = $entry->metadata;
                 file_put_contents($destFolder.$fileMetadata->name, base64_decode($thumbnail));
