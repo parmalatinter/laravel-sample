@@ -15,6 +15,10 @@ let routes=[
     {
         path: '/datatables',
         component: require('../components/TableComponent').default
+    },
+    {
+        path: '/files',
+        component: require('../components/FilesComponent').default
     }
 ];
 

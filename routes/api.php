@@ -27,5 +27,5 @@ Route::resource('items', App\Http\Controllers\API\ItemAPIController::class)
 Route::resource('blogs', App\Http\Controllers\API\BlogAPIController::class)
     ->except(['create', 'edit']);
 
-Route::resource('dropbox/test', App\Http\Controllers\API\DropBoxController::class)
+Route::resource('files', App\Http\Controllers\API\FileController::class)
     ->except(['create', 'edit']);

@@ -176,6 +176,11 @@ export default {
                 to: '/datatables',
                 icon: 'mdi-table'
             },
+            {
+                title: 'Files',
+                to: '/files',
+                icon: 'mdi-file'
+            },
         ]
     }),
 }
