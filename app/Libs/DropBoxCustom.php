@@ -146,7 +146,8 @@ class DropBoxCustom
                 file_put_contents($destFolder.$fileMetadata->name, base64_decode($thumbnail));
                 $files[] = [
                     'file' => response()->download($destFolder.$fileMetadata->name, $fileMetadata->name)->deleteFileAfterSend(),
-                    'fileMetadata' => $fileMetadata
+                    'base64Thumbnail' => $thumbnail,
+                    'fileMetadata' => $fileMetadata,
                 ];
             }
 
