@@ -93,7 +93,7 @@ class DropBoxCustom
      * @param string $size
      * @param string $destFolder
      *
-     * @return array [['file' => $file, 'fileMetadata' => $fileMetadata]]
+     * @return array [['file' => $file, 'fileMetadata' => $fileMetadata, 'base64Thumbnail' => $thumbnail]]
      * @throws GuzzleException
      * @throws Exception
      */

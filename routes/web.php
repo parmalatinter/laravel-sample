@@ -57,5 +57,3 @@ Route::get('dropbox/connect', function(){
 Route::get('dropbox/disconnect', function(){
     return Dropbox::disconnect('app/dropbox');
 });
-
-Route::get('dropbox/test', [App\Http\Controllers\DropBoxController::class, 'index'])->name('dropBox');
