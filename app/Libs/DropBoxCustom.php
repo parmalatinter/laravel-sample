@@ -5,7 +5,10 @@ namespace App\Libs;
 
 
 use Dcblogdev\Dropbox\Facades\Dropbox;
+use Exception;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\GuzzleException;
 
 class DropBoxCustom
 {
@@ -18,6 +21,10 @@ class DropBoxCustom
         return $string;
     }
 
+    /**
+     * @throws GuzzleException
+     * @throws Exception
+     */
     public static function getThumbnail($path, $destFolder = '')
     {
         $path = self::forceStartingSlash($path);
@@ -34,7 +41,7 @@ class DropBoxCustom
                         "size" => "w64h64",
                         "resource" => [
                             ".tag" => "path",
-                            "path" => "/test/white_cub.PNG",
+                            "path" => $path,
                         ]
                     ])
                 ]
@@ -61,6 +68,10 @@ class DropBoxCustom
         }
     }
 
+    /**
+     * @throws GuzzleException
+     * @throws Exception
+     */
     public static function getThumbnailBat($path)
     {
         $path = self::forceStartingSlash($path);
