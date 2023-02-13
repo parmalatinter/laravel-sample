@@ -30,6 +30,28 @@
                         >
                         </v-img>
                     </td>
+                    <td>
+                        <v-icon
+                            small
+                            class="mr-2"
+                            @click="previewItem(item)"
+                        >
+                            mdi-eye
+                        </v-icon>
+                        <v-icon
+                            small
+                            class="mr-2"
+                            @click="editItem(item)"
+                        >
+                            mdi-pencil
+                        </v-icon>
+                        <v-icon
+                            small
+                            @click="deleteItem(item)"
+                        >
+                            mdi-delete
+                        </v-icon>
+                    </td>
                 </tr>
             </template>
             <template v-slot:top>
@@ -70,27 +92,26 @@
                                             cols="12"
                                         >
                                             <v-text-field
-                                                v-model="editedItem.name"
+                                                v-model="editedItem.fileMetadata.name"
                                                 label="File name"
                                                 :disabled="isDisableInput()"
                                             ></v-text-field>
-                                            <Editor v-if="isDisableInput() === false"
-                                                mode="editor"
-                                                ref="editor"
-                                                :render-config="renderConfig"
-                                                v-model="editedItem.content"
-                                                :emoji="false"
-                                                outline
-                                            />
-                                            <span class="markdown-body">
-                                                <Editor
-                                                    mode="viewer"
-                                                    ref="editorViewer"
-                                                    :render-config="renderConfig"
-                                                    v-model="editedItem.content"
-                                                    :outline="false"
-                                                />
-                                            </span>
+                                            <v-row justify="center">
+                                                <v-col
+                                                    class="d-flex child-flex"
+                                                    cols="12"
+                                                >
+                                                    <v-img
+                                                        :src="editedItem.link"
+                                                        lazy-src="https://picsum.photos/id/11/100/60"
+                                                        width="100%"
+                                                        aspect-ratio="1"
+                                                        class="grey lighten-2"
+                                                    >
+                                                    </v-img>
+                                                </v-col>
+                                            </v-row>
+
                                         </v-col>
                                     </v-row>
                                 </v-container>
@@ -139,28 +160,7 @@
                     ></v-text-field>
                 </v-card-title>
             </template>
-            <template v-slot:item.actions="{ item }">
-                <v-icon
-                    small
-                    class="mr-2"
-                    @click="previewItem(item)"
-                >
-                    mdi-eye
-                </v-icon>
-                <v-icon
-                    small
-                    class="mr-2"
-                    @click="editItem(item)"
-                >
-                    mdi-pencil
-                </v-icon>
-                <v-icon
-                    small
-                    @click="deleteItem(item)"
-                >
-                    mdi-delete
-                </v-icon>
-            </template>
+
         </v-data-table>
     </v-card>
 </template>
@@ -202,12 +202,20 @@ export default {
         items: [],
         editedIndex: -1,
         editedItem: {
-            name: '',
-            content: '',
+            fileMetadata: {
+                name : ''
+            },
+            file: '',
+            link : '',
+            base64Thumbnail: '',
         },
         defaultItem: {
-            name: '',
-            content: '',
+            fileMetadata: {
+                name : ''
+            },
+            file: '',
+            link : '',
+            base64Thumbnail: '',
         },
         options: {search: ''},
         tableLoading:true,
@@ -254,6 +262,18 @@ export default {
     },
     methods: {
         initialize () {},
+        setFile(item) {
+            let url = this.routes['api.files.file'].uri
+            let method = this.routes['api.files.file'].methods[0]
+            axios[method.toLowerCase()](url,
+                item.fileMetadata,
+                { headers: { Authorization: "Bearer " + this.csrfToken }}
+            ).then((response) => {
+                if (response.data) {
+                    this.editedItem.link = response.data.link
+                }
+            })
+        },
         loadItems(_page = null) {
             this.tableLoading= true;
             this.items = []
@@ -334,13 +354,14 @@ export default {
         },
         previewItem (item) {
             this.editedIndex = this.items.indexOf(item)
-            this.editedItem = Object.assign({}, item)
+            this.setFile(item)
+            this.editedItem = Object.assign(this.defaultItem, item)
             this.dialog = true
             this.mode = 'preview'
         },
         editItem (item) {
             this.editedIndex = this.items.indexOf(item)
-            this.editedItem = Object.assign({}, item)
+            this.editedItem = Object.assign(this.defaultItem, item)
             this.dialog = true
             this.mode = 'edit'
         },

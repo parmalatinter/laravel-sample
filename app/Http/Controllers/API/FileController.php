@@ -6,9 +6,11 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\AppBaseController;
 use App\Libs\DropBoxCustom;
+use Dcblogdev\Dropbox\Facades\Dropbox;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class FileController extends AppBaseController
 {
@@ -29,5 +31,11 @@ class FileController extends AppBaseController
             'rows' => $files,
             'totalRowCount' => $totalRowCount
         ], 'Files retrieved successfully');
+    }
+
+    public function file(Request $request)
+    {
+        $input = $request->all();
+        return Dropbox::post('files/get_temporary_link', ['path' => $input['path_display']]);
     }
 }
