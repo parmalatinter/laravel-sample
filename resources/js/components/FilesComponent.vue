@@ -31,6 +31,16 @@
                         </v-img>
                     </td>
                     <td>
+                        {{ item.fileMetadata.size }}bytes
+                    </td>
+                    <td>
+                        <v-text-field
+                            :value="stringToDate(item.fileMetadata.client_modified)"
+                            type="date"
+                            disabled
+                        ></v-text-field>
+                    </td>
+                    <td>
                         <v-icon
                             small
                             class="mr-2"
@@ -223,6 +233,8 @@
 
 import { Editor } from "vuetify-markdown-editor";
 import axios from "axios";
+import moment from "moment"
+moment.locale("ja")
 
 export default {
     components: {
@@ -247,7 +259,23 @@ export default {
                 sortable: true,
                 value: 'base64Thumbnail',
             },
-            { text: 'Actions', value: 'actions', sortable: false },
+            {
+                text: 'Size',
+                align: 'start',
+                sortable: true,
+                value: 'size',
+            },
+            {
+                text: 'Date',
+                align: 'start',
+                sortable: true,
+                value: 'clientModified',
+            },
+            {
+                text: 'Actions',
+                value: 'actions',
+                sortable: false
+            },
         ],
         page: 1,
         lastPage: 1,
@@ -480,6 +508,9 @@ export default {
         },
         setBase64Prefix(base64String){
             return `data:image/png;base64,${base64String}`
+        },
+        stringToDate(string){
+            return moment(new Date(string)).local().format('YYYY-MM-DD');
         }
     },
 }

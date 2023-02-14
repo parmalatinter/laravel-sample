@@ -36,7 +36,6 @@ class FileController extends AppBaseController
         foreach ($filesInfo['entries'] as $entry){
             $pathList[] = $entry['path_lower'];
         }
-        // return DropBoxCustom::getThumbnail("/test/white_cub.PNG");
         $files = DropBoxCustom::getThumbnailBat($pathList, "jpeg", "w256h256");
         $totalRowCount = 1;
 
