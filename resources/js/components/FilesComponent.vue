@@ -156,6 +156,7 @@
                                                         label="Files"
                                                         multiple
                                                     ></v-file-input>
+                                                    <video width="320" controls :src="editedItem.link"></video>
                                                     <v-img
                                                         v-show="editedItem.link"
                                                         :src="editedItem.link"
@@ -234,6 +235,7 @@
 import { Editor } from "vuetify-markdown-editor";
 import axios from "axios";
 import moment from "moment"
+
 moment.locale("ja")
 
 export default {
