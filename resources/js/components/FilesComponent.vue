@@ -97,15 +97,55 @@
                                             cols="12"
                                         >
                                             <v-text-field
+                                                v-if="mode !== 'create'"
                                                 v-model="editedItem.fileMetadata.name"
                                                 label="File name"
                                                 :disabled="isDisableInput()"
                                             ></v-text-field>
                                             <v-row justify="center">
+
+                                                <v-col
+                                                    v-if="mode === 'create'"
+                                                    v-for="(image, i) in images"
+                                                    :key="n"
+                                                    class="d-flex child-flex"
+                                                    cols="4"
+                                                >
+                                                    <v-img
+                                                        :src="getImageUrl(image)"
+                                                        lazy-src="https://picsum.photos/id/11/100/60"
+                                                        aspect-ratio="1"
+                                                        class="grey lighten-2"
+                                                    >
+                                                        <template v-slot:placeholder>
+                                                            <v-row
+                                                                class="fill-height ma-0"
+                                                                align="center"
+                                                                justify="center"
+                                                            >
+                                                                <v-progress-circular
+                                                                    indeterminate
+                                                                    color="grey lighten-5"
+                                                                ></v-progress-circular>
+                                                            </v-row>
+                                                        </template>
+                                                    </v-img>
+                                                </v-col>
                                                 <v-col
                                                     class="d-flex child-flex"
                                                     cols="12"
                                                 >
+                                                    <v-file-input
+                                                        v-if="mode === 'create'"
+                                                        @change="selectFile"
+                                                        v-model="images"
+                                                        counter
+                                                        show-size
+                                                        small-chips
+                                                        truncate-length="24"
+                                                        label="Files"
+                                                        multiple
+                                                    ></v-file-input>
                                                     <v-img
                                                         v-show="editedItem.link"
                                                         :src="editedItem.link"
@@ -231,6 +271,8 @@ export default {
             link : '',
             base64Thumbnail: '',
         },
+        images: [],
+        selectedFiles: [],
         options: {search: ''},
         tableLoading:true,
         loading: false,
@@ -335,6 +377,11 @@ export default {
 
             let method = this.routes['api.files.store'].methods[0]
             let url = this.routes['api.files.store'].uri
+            const formData = new FormData()
+
+            this.selectedFiles.forEach((image,index) => {
+                formData.append(`images[${index}]`, image)
+            })
 
             // airtable API needs the data to be placed in fields object
             if (item.id) {
@@ -344,8 +391,7 @@ export default {
             }
 
             // save the record
-            axios[method.toLowerCase()](url,
-                item,
+            axios[method.toLowerCase()](url, formData,
                 { headers: { Authorization: "Bearer " + this.csrfToken }}
             ).then((response) => {
                 if (response.data) {
@@ -364,11 +410,13 @@ export default {
                 this.close()
             })
 
-            console.log('todo file uploading', this.$refs.editor.files)
+            console.log('todo file uploading', this.images)
         },
         createItem () {
             this.dialog = true
             this.mode = 'create'
+            this.images = []
+            this.selectedFiles = []
         },
         previewItem (item) {
             this.editedIndex = this.items.indexOf(item)
@@ -380,6 +428,7 @@ export default {
         editItem (item) {
             this.editedIndex = this.items.indexOf(item)
             this.editedItem = Object.assign({}, item)
+            this.setFile(item)
             this.dialog = true
             this.mode = 'edit'
         },
@@ -391,6 +440,10 @@ export default {
         },
         deleteItemConfirm () {
             this.closeDelete()
+        },
+        getImageUrl(image){
+            if(image===null) return
+            return URL.createObjectURL(image)
         },
         close () {
             this.dialog = false
@@ -421,6 +474,9 @@ export default {
         },
         save () {
             this.saveItem(this.editedItem)
+        },
+        selectFile() {
+            this.selectedFiles = event.target.files;
         },
         setBase64Prefix(base64String){
             return `data:image/png;base64,${base64String}`

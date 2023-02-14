@@ -6,12 +6,20 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\AppBaseController;
 use App\Libs\DropBoxCustom;
+use App\Models\Blog;
 use Dcblogdev\Dropbox\Facades\Dropbox;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
+/**
+ * Class FileController
+ *
+ * @see https://github.com/dcblogdev/laravel-dropbox
+ * @package App\Http\Controllers\API
+ */
 class FileController extends AppBaseController
 {
 
@@ -37,5 +45,23 @@ class FileController extends AppBaseController
     {
         $input = $request->all();
         return Dropbox::post('files/get_temporary_link', ['path' => $input['path_display']]);
+    }
+
+    public function store(Request $request): JsonResponse
+    {
+
+        $images = $request->file('images') ?? [];
+        foreach ($images as $image){
+            $imageName = $image->getClientOriginalName();
+            Log::info($imageName);
+            $path = $image->storeAS('/test',$imageName);
+            $path = storage_path("app/{$path}");
+            Dropbox::files()->upload('/test', $path);
+        }
+
+
+        return $this->sendResponse([
+            'images' => $images
+        ], 'Files saved successfully');
     }
 }
