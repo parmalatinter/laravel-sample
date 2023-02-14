@@ -26,9 +26,10 @@ Route::get('dropbox/connect', function () {
     return Dropbox::connect();
 })->name('dropbox.connect');
 
-Route::get('dropbox/disconnect', function () {
-    return Dropbox::disconnect('app/dropbox');
-});
+// disable disconnect
+// Route::get('dropbox/disconnect', function () {
+//     return Dropbox::disconnect('/');
+// });
 
 Route::group(['middleware' => [DropBoxConnect::class]], function() {
 
