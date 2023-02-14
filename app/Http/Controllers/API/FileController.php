@@ -31,8 +31,13 @@ class FileController extends AppBaseController
      */
     public function index(Request $request)
     {
+        $filesInfo = Dropbox::post('files/list_folder', ['path' =>'/test']);
+        $pathList = [];
+        foreach ($filesInfo['entries'] as $entry){
+            $pathList[] = $entry['path_lower'];
+        }
         // return DropBoxCustom::getThumbnail("/test/white_cub.PNG");
-        $files = DropBoxCustom::getThumbnailBat(["/test/white_cub.PNG", "/test/DSCN0289.JPG"], "jpeg", "w256h256");
+        $files = DropBoxCustom::getThumbnailBat($pathList, "jpeg", "w256h256");
         $totalRowCount = 1;
 
         return $this->sendResponse([
