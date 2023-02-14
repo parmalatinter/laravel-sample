@@ -69,6 +69,7 @@
                         v-model="dialog"
                         scrollable
                         max-width="500px"
+                        :scrim="false"
                     >
                         <template v-slot:activator="{ on, attrs }">
                             <v-btn
@@ -84,7 +85,11 @@
                             <v-card-title>
                                 <span class="text-h5">{{ formTitle }}</span>
                             </v-card-title>
-
+                            <v-card-text>
+                                <v-progress-linear
+                                    :indeterminate="editedItem.link === ''">
+                                </v-progress-linear>
+                            </v-card-text>
                             <v-card-text>
                                 <v-container>
                                     <v-row>
@@ -102,12 +107,21 @@
                                                     cols="12"
                                                 >
                                                     <v-img
+                                                        v-show="editedItem.link"
                                                         :src="editedItem.link"
                                                         lazy-src="https://picsum.photos/id/11/100/60"
                                                         width="100%"
                                                         aspect-ratio="1"
                                                         class="grey lighten-2"
                                                     >
+                                                        <template v-slot:placeholder>
+                                                            <div class="d-flex align-center justify-center fill-height">
+                                                                <v-progress-circular
+                                                                    color="grey-lighten-4"
+                                                                    indeterminate
+                                                                ></v-progress-circular>
+                                                            </div>
+                                                        </template>
                                                     </v-img>
                                                 </v-col>
                                             </v-row>
@@ -245,6 +259,7 @@ export default {
     },
     watch: {
         dialog (val) {
+            if(!val) this.editedItem = Object.assign({}, this.defaultItem)
             val || this.close()
         },
         dialogDelete (val) {
@@ -265,12 +280,14 @@ export default {
         setFile(item) {
             let url = this.routes['api.files.file'].uri
             let method = this.routes['api.files.file'].methods[0]
-            axios[method.toLowerCase()](url,
+            this.editedItem['link'] = ''
+                axios[method.toLowerCase()](url,
                 item.fileMetadata,
                 { headers: { Authorization: "Bearer " + this.csrfToken }}
             ).then((response) => {
                 if (response.data) {
-                    this.editedItem.link = response.data.link
+                    this.editedItem = Object.assign({}, item)
+                    this.editedItem['link'] = response.data.link
                 }
             })
         },
@@ -341,8 +358,9 @@ export default {
                     }else{
                         this.loadItems()
                     }
-                    this.editedItem = {}
+
                 }
+                this.editedItem = {}
                 this.close()
             })
 
@@ -354,14 +372,14 @@ export default {
         },
         previewItem (item) {
             this.editedIndex = this.items.indexOf(item)
+            this.editedItem = Object.assign({}, item)
             this.setFile(item)
-            this.editedItem = Object.assign(this.defaultItem, item)
             this.dialog = true
             this.mode = 'preview'
         },
         editItem (item) {
             this.editedIndex = this.items.indexOf(item)
-            this.editedItem = Object.assign(this.defaultItem, item)
+            this.editedItem = Object.assign({}, item)
             this.dialog = true
             this.mode = 'edit'
         },
@@ -377,10 +395,10 @@ export default {
         close () {
             this.dialog = false
             this.dialogDelete = false
-            this.$nextTick(() => {
-                this.editedItem = Object.assign({}, this.defaultItem)
-                this.editedIndex = -1
-            })
+            this.editedItem = this.defaultItem
+            this.editedIndex = -1
+            this.$nextTick(() => {})
+            this.$emit('update:activated', false);
         },
         closeDelete () {
             this.dialogDelete = false
@@ -396,7 +414,7 @@ export default {
                         }
                     }).then((response) => {
                     this.loadItems()
-                    this.editedItem = Object.assign({}, this.defaultItem)
+                    this.editedItem = this.defaultItem
                     this.editedIndex = -1
                 })
             })
