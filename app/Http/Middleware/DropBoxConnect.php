@@ -33,6 +33,7 @@ class DropBoxConnect
 
         if (Auth::check()){
             $id = auth()->id();
+            $tokenExists = DropboxToken::where('user_id', $id)->exists();
             // get not expired token
             $token = DropboxToken::where('user_id', $id)
                 ->where('expires_in', '>', Carbon::now()->addMinutes(30))
@@ -44,9 +45,13 @@ class DropBoxConnect
                 if($token){
                     // set new token from exist old token
                     DropBoxCustom::setNewToken($token);
-                }else{
-                    // set new token
-                    return Dropbox::connect();
+                }
+
+                if($tokenExists === false){
+                    $tokenCopyFrom = DropboxToken::orderBy('expires_in', 'desc')->first();
+                    $newToken = $tokenCopyFrom->replicate();
+                    $newToken->user_id = $id;
+                    $newToken->save();
                 }
             }
         }
