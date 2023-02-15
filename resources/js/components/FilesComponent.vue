@@ -113,6 +113,7 @@
                             </v-card-title>
                             <v-card-text>
                                 <v-progress-linear
+                                    v-if="mode !== 'create'"
                                     :indeterminate="editedItem.link === ''">
                                 </v-progress-linear>
                             </v-card-text>
@@ -132,13 +133,20 @@
 
                                                 <v-col
                                                     v-if="mode === 'create'"
-                                                    v-for="(image, i) in images"
-                                                    :key="n"
+                                                    v-for="(file, i) in files"
+                                                    :key="file"
                                                     class="d-flex child-flex"
-                                                    cols="4"
+                                                    cols="8"
                                                 >
+                                                    <video
+                                                        v-if="getFileType(file.name) === 'movie'"
+                                                        width="320"
+                                                        controls
+                                                        :src="getFileUrl(file)">
+                                                    </video>
                                                     <v-img
-                                                        :src="getImageUrl(image)"
+                                                        v-if="getFileType(file.name) === 'image'"
+                                                        :src="getFileUrl(file)"
                                                         lazy-src="https://picsum.photos/id/11/100/60"
                                                         aspect-ratio="1"
                                                         class="grey lighten-2"
@@ -164,7 +172,7 @@
                                                     <v-file-input
                                                         v-if="mode === 'create'"
                                                         @change="selectFile"
-                                                        v-model="images"
+                                                        v-model="files"
                                                         counter
                                                         show-size
                                                         small-chips
@@ -332,7 +340,7 @@ export default {
             link : '',
             base64Thumbnail: '',
         },
-        images: [],
+        files: [],
         selectedFiles: [],
         options: {search: ''},
         tableLoading:true,
@@ -440,8 +448,8 @@ export default {
             let url = this.routes['api.files.store'].uri
             const formData = new FormData()
 
-            this.selectedFiles.forEach((image,index) => {
-                formData.append(`images[${index}]`, image)
+            this.selectedFiles.forEach((file,index) => {
+                formData.append(`files[${index}]`, file)
             })
 
             // airtable API needs the data to be placed in fields object
@@ -471,12 +479,12 @@ export default {
                 this.close()
             })
 
-            console.log('todo file uploading', this.images)
+            console.log('todo file uploading', this.files)
         },
         createItem () {
             this.dialog = true
             this.mode = 'create'
-            this.images = []
+            this.files = []
             this.selectedFiles = []
         },
         previewItem (item) {
@@ -502,9 +510,9 @@ export default {
         deleteItemConfirm () {
             this.closeDelete()
         },
-        getImageUrl(image){
-            if(image===null) return
-            return URL.createObjectURL(image)
+        getFileUrl(file){
+            if(file===null) return
+            return URL.createObjectURL(file)
         },
         close () {
             this.dialog = false

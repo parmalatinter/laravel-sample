@@ -52,18 +52,18 @@ class FileController extends AppBaseController
     public function store(Request $request): JsonResponse
     {
 
-        $images = $request->file('images') ?? [];
-        foreach ($images as $image){
-            $imageName = $image->getClientOriginalName();
-            Log::info($imageName);
-            $path = $image->storeAS('/test',$imageName);
+        $files = $request->file('files') ?? [];
+        foreach ($files as $file){
+            $fileName = $file->getClientOriginalName();
+            Log::info($fileName);
+            $path = $file->storeAS('/test',$fileName);
             $path = storage_path("app/{$path}");
             Dropbox::files()->upload('/test', $path);
         }
 
 
         return $this->sendResponse([
-            'images' => $images
+            'files' => $files
         ], 'Files saved successfully');
     }
 

@@ -139,8 +139,18 @@ class DropBoxCustom
             $files = [];
             foreach ($contents->entries as $key => $entry){
                 if(property_exists($entry, 'failure')){
-                    $path = $pathList[$key];
-                    throw new Exception("File is undefined. path :{$path}");
+                    $filePathArray = explode ('/',$pathList[$key]);
+                    $files[] = [
+                        'file' => null,
+                        'base64Thumbnail' => null,
+                        'fileMetadata' => [
+                            'tag' => $entry->{'.tag'},
+                            'path_lower' => $pathList[$key],
+                            'path_display' => $pathList[$key],
+                            'name' => array_slice($filePathArray, -1)[0]
+                        ],
+                    ];
+                    continue;
                 }
 
                 $thumbnail = $entry->thumbnail;
