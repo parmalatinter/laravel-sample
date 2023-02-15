@@ -31,6 +31,20 @@
                         </v-img>
                     </td>
                     <td>
+                        <v-icon
+                            v-if="getFileType( item.fileMetadata.name) === 'image'"
+                            class="mr-2"
+                        >
+                            mdi-image
+                        </v-icon>
+                        <v-icon
+                            v-if="getFileType( item.fileMetadata.name) === 'movie'"
+                            class="mr-2"
+                        >
+                            mdi-movie-play
+                        </v-icon>
+                    </td>
+                    <td>
                         {{ item.fileMetadata.size }}bytes
                     </td>
                     <td>
@@ -260,6 +274,12 @@ export default {
                 align: 'start',
                 sortable: true,
                 value: 'base64Thumbnail',
+            },
+            {
+                text: 'Type',
+                align: 'start',
+                sortable: true,
+                value: 'type',
             },
             {
                 text: 'Size',
@@ -510,6 +530,27 @@ export default {
         },
         setBase64Prefix(base64String){
             return `data:image/png;base64,${base64String}`
+        },
+        getFileExtension(name){
+            return name.split('.').slice(-1)[0].toLowerCase();
+
+        },
+        getFileType(name){
+            let extension = this.getFileExtension(name)
+            let type = '';
+
+            switch (extension){
+                case 'mov':
+                    type = 'movie'
+                    break
+                case 'png':
+                case 'jpg':
+                    type = 'image'
+                    break
+                default:
+                    // nothing todo
+            }
+            return type
         },
         stringToDate(string){
             return moment(new Date(string)).local().format('YYYY-MM-DD');
