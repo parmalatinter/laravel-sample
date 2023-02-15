@@ -89,6 +89,8 @@
                         vertical
                     ></v-divider>
                     <v-spacer></v-spacer>
+
+                    <!-- dialog edit, preview, create -->
                     <v-dialog
                         v-model="dialog"
                         scrollable
@@ -170,8 +172,15 @@
                                                         label="Files"
                                                         multiple
                                                     ></v-file-input>
-                                                    <video width="320" controls :src="editedItem.link"></video>
+                                                    <video
+                                                        v-if="getFileType( editedItem.fileMetadata.name) === 'movie'"
+                                                        v-show="editedItem.link"
+                                                        width="320"
+                                                        controls
+                                                        :src="editedItem.link">
+                                                    </video>
                                                     <v-img
+                                                        v-if="getFileType( editedItem.fileMetadata.name) === 'image'"
                                                         v-show="editedItem.link"
                                                         :src="editedItem.link"
                                                         lazy-src="https://picsum.photos/id/11/100/60"
@@ -215,6 +224,8 @@
                             </v-card-actions>
                         </v-card>
                     </v-dialog>
+
+                    <!-- dialog delete -->
                     <v-dialog
                         v-model="dialogDelete"
                         max-width="500px">
