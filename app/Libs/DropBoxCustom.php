@@ -4,7 +4,9 @@
 namespace App\Libs;
 
 
+use Carbon\Carbon;
 use Dcblogdev\Dropbox\Facades\Dropbox;
+use Dcblogdev\Dropbox\Models\DropboxToken;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
@@ -156,6 +158,48 @@ class DropBoxCustom
         } catch (ClientException $e) {
             throw new Exception($e->getResponse()->getBody()->getContents());
         } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    /**
+     * @throws GuzzleException
+     */
+    public static function setNewToken(DropboxToken $dropboxToken){
+        $newToken = self::getNewToken($dropboxToken);
+        $dropboxToken->fill(
+            [
+                "access_token" => $newToken["access_token"],
+                "expires_in" => Carbon::now()->addSeconds(($newToken['expires_in'] - 100)),
+            ]
+        );
+        $dropboxToken->update();
+    }
+    /**
+     *
+     * @see https://gist.github.com/phuze/755dd1f58fba6849fbf7478e77e2896a
+     * @throws GuzzleException
+     * @throws Exception
+     */
+    private static function getNewToken(DropboxToken $dropboxToken)
+    {
+        try {
+            $client = new Client();
+            $key = config('dropbox.clientId');
+            $secret = config('dropbox.clientSecret');
+            $res = $client->post("https://{$key}:{$secret}@api.dropbox.com/oauth2/token", [
+                'form_params' => [
+                    'grant_type' => 'refresh_token',
+                    'refresh_token' => $dropboxToken->refresh_token,
+                ]
+            ]);
+            if ($res->getStatusCode() == 200) {
+                return json_decode($res->getBody(), TRUE);
+            } else {
+                return false;
+            }
+        }
+        catch (Exception $e) {
             throw new Exception($e->getMessage());
         }
     }
