@@ -6,13 +6,11 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\AppBaseController;
 use App\Libs\DropBoxCustom;
-use App\Models\Blog;
 use Dcblogdev\Dropbox\Facades\Dropbox;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 
 /**
  * Class FileController
@@ -45,7 +43,7 @@ class FileController extends AppBaseController
         ], 'Files retrieved successfully');
     }
 
-    public function file(Request $request)
+    public function link(Request $request)
     {
         $input = $request->all();
         return Dropbox::post('files/get_temporary_link', ['path' => $input['path_display']]);
@@ -67,5 +65,20 @@ class FileController extends AppBaseController
         return $this->sendResponse([
             'images' => $images
         ], 'Files saved successfully');
+    }
+
+    /*
+     *
+     */
+    public function destroy(Request $request): JsonResponse
+    {
+        $path = $request->get('path');
+        $deleteInfo = Dropbox::files()->delete($path);
+        $totalRowCount = 1;
+
+        return $this->sendResponse([
+            'result' => !empty($deleteInfo),
+            'totalRowCount' => $totalRowCount
+        ], 'Files retrieved successfully');
     }
 }

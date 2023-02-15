@@ -62,13 +62,13 @@
                         >
                             mdi-eye
                         </v-icon>
-                        <v-icon
-                            small
-                            class="mr-2"
-                            @click="editItem(item)"
-                        >
-                            mdi-pencil
-                        </v-icon>
+<!--                        <v-icon-->
+<!--                            small-->
+<!--                            class="mr-2"-->
+<!--                            @click="editItem(item)"-->
+<!--                        >-->
+<!--                            mdi-pencil-->
+<!--                        </v-icon>-->
                         <v-icon
                             small
                             @click="deleteItem(item)"
@@ -381,8 +381,8 @@ export default {
     methods: {
         initialize () {},
         setFile(item) {
-            let url = this.routes['api.files.file'].uri
-            let method = this.routes['api.files.file'].methods[0]
+            let url = this.routes['api.files.link'].uri
+            let method = this.routes['api.files.link'].methods[0]
             this.editedItem['link'] = ''
                 axios[method.toLowerCase()](url,
                 item.fileMetadata,
@@ -515,13 +515,15 @@ export default {
             this.$emit('update:activated', false);
         },
         closeDelete () {
-            this.dialogDelete = false
             this.$nextTick(() => {
 
-                const method = this.routes['api.files.destroy'].methods[0]
-                const url = this.routes['api.files.destroy'].uri.replace('{file}', this.editedItem.id)
+                const method = this.routes['api.files.delete'].methods[0]
+                const url = this.routes['api.files.delete'].uri
+                const formData = new FormData()
 
-                axios[method.toLowerCase()](url,
+                formData.append('path', this.editedItem.fileMetadata.path_display)
+
+                axios[method.toLowerCase()](url, formData,
                     { headers: {
                             Authorization: "Bearer " + this.csrfToken,
                             "Content-Type": "application/json"
@@ -530,6 +532,7 @@ export default {
                     this.loadItems()
                     this.editedItem = this.defaultItem
                     this.editedIndex = -1
+                    this.dialogDelete = false
                 })
             })
         },

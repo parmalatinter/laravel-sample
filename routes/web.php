@@ -23,14 +23,14 @@ Route::get('/', function () {
 Auth::routes();
 
 // disable connect
-// Route::get('dropbox/connect', function () {
-//     return Dropbox::connect();
-// })->name('dropbox.connect');
+Route::get('dropbox/connect', function () {
+    return Dropbox::connect();
+})->name('dropbox.connect');
 
 // disable disconnect
-// Route::get('dropbox/disconnect', function () {
-//     return Dropbox::disconnect('/');
-// });
+Route::get('dropbox/disconnect', function () {
+    return Dropbox::disconnect('/');
+});
 
 Route::group(['middleware' => [DropBoxConnect::class]], function() {
 

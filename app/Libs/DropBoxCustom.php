@@ -167,13 +167,10 @@ class DropBoxCustom
      */
     public static function setNewToken(DropboxToken $dropboxToken){
         $newToken = self::getNewToken($dropboxToken);
-        $dropboxToken->fill(
-            [
-                "access_token" => $newToken["access_token"],
-                "expires_in" => Carbon::now()->addSeconds(($newToken['expires_in'] - 100)),
-            ]
-        );
-        $dropboxToken->update();
+        DropboxToken::query()->update([
+            "access_token" => $newToken["access_token"],
+            "expires_in" => Carbon::now()->addSeconds($newToken['expires_in']),
+        ]);
     }
     /**
      *

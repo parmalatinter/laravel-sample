@@ -35,11 +35,11 @@ class DropBoxConnect
             $id = auth()->id();
             // get not expired token
             $token = DropboxToken::where('user_id', $id)
-                ->whereDate('expires_in', '>', Carbon::now()->addMinutes(30))
+                ->where('expires_in', '>', Carbon::now()->addMinutes(30))
                 ->count();
 
             if ($token === 0) {
-                $token = DropboxToken::where('user_id', $id)->first();
+                $token = DropboxToken::orderBy('expires_in', 'desc')->first();
 
                 if($token){
                     // set new token from exist old token
