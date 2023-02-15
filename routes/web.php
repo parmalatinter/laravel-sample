@@ -22,9 +22,10 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('dropbox/connect', function () {
-    return Dropbox::connect();
-})->name('dropbox.connect');
+// disable connect
+// Route::get('dropbox/connect', function () {
+//     return Dropbox::connect();
+// })->name('dropbox.connect');
 
 // disable disconnect
 // Route::get('dropbox/disconnect', function () {
