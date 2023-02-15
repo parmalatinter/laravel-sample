@@ -46,7 +46,7 @@ class DropBoxConnect
                     DropBoxCustom::setNewToken($token);
                 }else{
                     // set new token
-                    return redirect()->route('dropbox.connect');
+                    return Dropbox::connect();
                 }
             }
         }
