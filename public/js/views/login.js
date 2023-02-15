@@ -20,6 +20,7 @@ __webpack_require__.r(__webpack_exports__);
         this.title = 'Register Form';
         this.faildMessage = 'Register Failed';
         this.btnTitle = 'Register';
+        this.isRegister = false;
         break;
       case 'login':
         this.uri = window.routes.login.uri;
@@ -61,12 +62,13 @@ __webpack_require__.r(__webpack_exports__);
         return v && v.length <= 30 || 'Name must be less than 30 characters';
       }],
       password: '',
+      passwordConfirmation: '',
       passwordRules: [function (v) {
         return !!v || 'Password is required';
       }, function (v) {
         return v && v.length <= 10 || 'Name must be less than 10 characters';
       }],
-      isRegister: true
+      isRegister: false
     };
   },
   props: {
@@ -211,6 +213,24 @@ var render = function render() {
         _vm.password = $$v;
       },
       expression: "password"
+    }
+  }) : _vm._e(), _vm._v(" "), _vm.params.action !== "passwordReset" && _vm.isRegister ? _c("v-text-field", {
+    attrs: {
+      id: "password_confirmation",
+      "prepend-icon": "mdi-lock",
+      name: "password_confirmation",
+      label: "Password Confirmation",
+      type: "password_confirmation",
+      counter: 10,
+      rules: _vm.passwordRules,
+      required: ""
+    },
+    model: {
+      value: _vm.passwordConfirmation,
+      callback: function callback($$v) {
+        _vm.passwordConfirmation = $$v;
+      },
+      expression: "passwordConfirmation"
     }
   }) : _vm._e(), _vm._v(" "), _vm.params.action === "login" ? _c("v-checkbox", {
     attrs: {

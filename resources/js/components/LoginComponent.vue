@@ -63,6 +63,18 @@
                                         :rules="passwordRules"
                                         required
                                     ></v-text-field>
+                                    <v-text-field
+                                        v-if="params.action !== 'passwordReset' && isRegister"
+                                        id="password_confirmation"
+                                        prepend-icon="mdi-lock"
+                                        name="password_confirmation"
+                                        label="Password Confirmation"
+                                        type="password_confirmation"
+                                        v-model="passwordConfirmation"
+                                        :counter="10"
+                                        :rules="passwordRules"
+                                        required
+                                    ></v-text-field>
                                     <v-checkbox
                                         v-if="params.action === 'login'"
                                         name="remember"
@@ -109,6 +121,7 @@ export default {
                 this.title = 'Register Form'
                 this.faildMessage = 'Register Failed'
                 this.btnTitle = 'Register'
+                this.isRegister = false
                 break
             case 'login':
                 this.uri = window.routes.login.uri
@@ -147,11 +160,12 @@ export default {
             v => (v && v.length <= 30) || 'Name must be less than 30 characters',
         ],
         password: '',
+        passwordConfirmation: '',
         passwordRules: [
             v => !!v || 'Password is required',
             v => (v && v.length <= 10) || 'Name must be less than 10 characters',
         ],
-        isRegister: true
+        isRegister: false
     }),
     props: {
         source: String,
