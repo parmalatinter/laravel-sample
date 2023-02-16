@@ -42,7 +42,6 @@ class FileController extends AppBaseController
         }
         $files = DropBoxCustom::getThumbnailBat($pathList, "jpeg", "w256h256");
         $totalRowCount = 1;
-        $a = array('a' => 'valueA', 'b' => 'valueB');
         $rows = array_map(function ($index, $entry) use ($files){
                 return array_merge($entry,$files[$index]?? [] );
             }, array_keys($filesInfo['entries']), array_values($filesInfo['entries'])
