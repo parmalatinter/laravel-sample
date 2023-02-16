@@ -19,7 +19,7 @@
         >
             <template v-slot:item="{ item }">
                 <tr>
-                    <td>{{ item.fileMetadata.name }}</td>
+                    <td>{{ item.name }}</td>
                     <td>
                         <v-img
                             :src="setBase64Prefix(item.base64Thumbnail)"
@@ -32,24 +32,24 @@
                     </td>
                     <td>
                         <v-icon
-                            v-if="getFileType( item.fileMetadata.name) === 'image'"
+                            v-if="getFileType( item.name) === 'image'"
                             class="mr-2"
                         >
                             mdi-image
                         </v-icon>
                         <v-icon
-                            v-if="getFileType( item.fileMetadata.name) === 'movie'"
+                            v-if="getFileType( item.name) === 'movie'"
                             class="mr-2"
                         >
                             mdi-movie-play
                         </v-icon>
                     </td>
                     <td>
-                        {{ item.fileMetadata.size }}bytes
+                        {{ item.size }}bytes
                     </td>
                     <td>
                         <v-text-field
-                            :value="stringToDate(item.fileMetadata.client_modified)"
+                            :value="stringToDate(item.client_modified)"
                             type="date"
                             disabled
                         ></v-text-field>
@@ -125,7 +125,7 @@
                                         >
                                             <v-text-field
                                                 v-if="mode !== 'create'"
-                                                v-model="editedItem.fileMetadata.name"
+                                                v-model="editedItem.name"
                                                 label="File name"
                                                 :disabled="isDisableInput()"
                                             ></v-text-field>
@@ -181,14 +181,14 @@
                                                         multiple
                                                     ></v-file-input>
                                                     <video
-                                                        v-if="getFileType( editedItem.fileMetadata.name) === 'movie'"
+                                                        v-if="getFileType( editedItem.name) === 'movie'"
                                                         v-show="editedItem.link"
                                                         width="320"
                                                         controls
                                                         :src="editedItem.link">
                                                     </video>
                                                     <v-img
-                                                        v-if="getFileType( editedItem.fileMetadata.name) === 'image'"
+                                                        v-if="getFileType( editedItem.name) === 'image'"
                                                         v-show="editedItem.link"
                                                         :src="editedItem.link"
                                                         lazy-src="https://picsum.photos/id/11/100/60"
@@ -286,7 +286,7 @@ export default {
                 text: 'Name',
                 align: 'start',
                 sortable: true,
-                value: 'fileMetadata.name',
+                value: 'name',
             },
             {
                 text: 'Content',
@@ -325,17 +325,13 @@ export default {
         items: [],
         editedIndex: -1,
         editedItem: {
-            fileMetadata: {
-                name : ''
-            },
+            fileMetadata: {},
             file: '',
             link : '',
             base64Thumbnail: '',
         },
         defaultItem: {
-            fileMetadata: {
-                name : ''
-            },
+            fileMetadata: {},
             file: '',
             link : '',
             base64Thumbnail: '',
@@ -529,7 +525,7 @@ export default {
                 const url = this.routes['api.files.delete'].uri
                 const formData = new FormData()
 
-                formData.append('path', this.editedItem.fileMetadata.path_display)
+                formData.append('path', this.editedItem.path_display)
 
                 axios[method.toLowerCase()](url, formData,
                     { headers: {
@@ -558,6 +554,7 @@ export default {
 
         },
         getFileType(name){
+            if(name === undefined) return '';
             let extension = this.getFileExtension(name)
             let type = '';
 

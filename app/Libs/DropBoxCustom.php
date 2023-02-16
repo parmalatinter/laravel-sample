@@ -139,16 +139,10 @@ class DropBoxCustom
             $files = [];
             foreach ($contents->entries as $key => $entry){
                 if(property_exists($entry, 'failure')){
-                    $filePathArray = explode ('/',$pathList[$key]);
                     $files[] = [
                         'file' => null,
                         'base64Thumbnail' => null,
-                        'fileMetadata' => [
-                            'tag' => $entry->{'.tag'},
-                            'path_lower' => $pathList[$key],
-                            'path_display' => $pathList[$key],
-                            'name' => array_slice($filePathArray, -1)[0]
-                        ],
+                        'fileMetadata' => [],
                     ];
                     continue;
                 }
