@@ -29,17 +29,30 @@ class FileController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $filesInfo = Dropbox::post('files/list_folder', ['path' =>'/test']);
+        $cursor = $request->get('cursor')?? null;
+        if($cursor){
+            $filesInfo = Dropbox::post('/list_folder/continue', ['cursor' => $cursor]);
+        }else{
+            $filesInfo = Dropbox::post('files/list_folder', ['path' =>'/test']);
+        }
+
         $pathList = [];
         foreach ($filesInfo['entries'] as $entry){
             $pathList[] = $entry['path_lower'];
         }
         $files = DropBoxCustom::getThumbnailBat($pathList, "jpeg", "w256h256");
         $totalRowCount = 1;
+        $a = array('a' => 'valueA', 'b' => 'valueB');
+        $rows = array_map(function ($index, $entry) use ($files){
+                return array_merge($entry,$files[$index]?? [] );
+            }, array_keys($filesInfo['entries']), array_values($filesInfo['entries'])
+        );
 
         return $this->sendResponse([
-            'rows' => $files,
-            'totalRowCount' => $totalRowCount
+            'rows' => $rows,
+            'totalRowCount' => $totalRowCount,
+            'hasMore' => $filesInfo['has_more'] ?? false,
+            'cursor' => $filesInfo['cursor'] ?? '',
         ], 'Files retrieved successfully');
     }
 
