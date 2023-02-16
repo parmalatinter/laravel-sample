@@ -43,6 +43,12 @@
                         >
                             mdi-movie-play
                         </v-icon>
+                        <v-icon
+                            v-if="getFileType( item.name) === ''"
+                            class="mr-2"
+                        >
+                            mdi-file
+                        </v-icon>
                     </td>
                     <td>
                         {{ item.size }}bytes
@@ -94,7 +100,7 @@
                     <v-dialog
                         v-model="dialog"
                         scrollable
-                        max-width="500px"
+                        max-width="800px"
                         :scrim="false"
                     >
                         <template v-slot:activator="{ on, attrs }">
@@ -138,6 +144,16 @@
                                                     class="d-flex child-flex"
                                                     cols="8"
                                                 >
+                                                    <span
+                                                        v-if="getFileType(file.name) === ''"
+                                                        class="markdown-body">
+                                                        <Editor
+                                                            mode="viewer"
+                                                            ref="editor"
+                                                            :render-config="renderConfig"
+                                                            v-model="file.name"
+                                                        />
+                                                    </span>
                                                     <video
                                                         v-if="getFileType(file.name) === 'movie'"
                                                         width="320"
@@ -145,11 +161,12 @@
                                                         :src="getFileUrl(file)">
                                                     </video>
                                                     <v-img
+                                                        height="300"
+                                                        max-width="500"
                                                         v-if="getFileType(file.name) === 'image'"
                                                         :src="getFileUrl(file)"
                                                         lazy-src="https://picsum.photos/id/11/100/60"
-                                                        aspect-ratio="1"
-                                                        class="grey lighten-2"
+                                                        class="grey lighten-2 mx-auto"
                                                     >
                                                         <template v-slot:placeholder>
                                                             <v-row
@@ -180,6 +197,16 @@
                                                         label="Files"
                                                         multiple
                                                     ></v-file-input>
+                                                    <span
+                                                        class="markdown-body">
+                                                        <Editor
+                                                            style="white-space: pre-wrap;"
+                                                            mode="viewer"
+                                                            ref="editor"
+                                                            :render-config="renderConfig"
+                                                            v-model="editedItem.fileText"
+                                                        />
+                                                    </span>
                                                     <video
                                                         v-if="getFileType( editedItem.name) === 'movie'"
                                                         v-show="editedItem.link"
@@ -192,9 +219,10 @@
                                                         v-show="editedItem.link"
                                                         :src="editedItem.link"
                                                         lazy-src="https://picsum.photos/id/11/100/60"
-                                                        width="100%"
+                                                        height="300"
+                                                        max-width="500"
                                                         aspect-ratio="1"
-                                                        class="grey lighten-2"
+                                                        class="grey lighten-2 mx-auto"
                                                     >
                                                         <template v-slot:placeholder>
                                                             <div class="d-flex align-center justify-center fill-height">
@@ -329,12 +357,14 @@ export default {
             file: '',
             link : '',
             base64Thumbnail: '',
+            fileText: '',
         },
         defaultItem: {
             fileMetadata: {},
             file: '',
             link : '',
             base64Thumbnail: '',
+            fileText: '',
         },
         files: [],
         selectedFiles: [],
@@ -387,14 +417,20 @@ export default {
         setFile(item) {
             let url = this.routes['api.files.link'].uri
             let method = this.routes['api.files.link'].methods[0]
-            this.editedItem['link'] = ''
-                axios[method.toLowerCase()](url,
-                item.fileMetadata,
+            axios[method.toLowerCase()](url,
+                item,
                 { headers: { Authorization: "Bearer " + this.csrfToken }}
             ).then((response) => {
                 if (response.data) {
-                    this.editedItem = Object.assign({}, item)
-                    this.editedItem['link'] = response.data.link
+                    this.editedItem = Object.assign(this.defaultItem, item)
+                    this.editedItem.link = response.data.link
+                    if(this.getFileType(this.editedItem.name) === ''){
+                        axios['get'](this.editedItem.link).then((response) => {
+                            if (response.data) {
+                                this.editedItem.fileText = response.data
+                            }
+                        })
+                    }
                 }
             })
         },
@@ -507,6 +543,10 @@ export default {
             this.closeDelete()
         },
         getFileUrl(file){
+            if(file===null) return
+            return URL.createObjectURL(file)
+        },
+        getFileText(file){
             if(file===null) return
             return URL.createObjectURL(file)
         },
