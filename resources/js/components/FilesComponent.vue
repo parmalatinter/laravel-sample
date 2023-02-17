@@ -4,18 +4,19 @@
         class="mx-auto my-12"
     >
         <v-data-table
+            class="elevation-1 fileTable"
             :page="page"
             :headers="headers"
             :items="items"
             sort-by="name"
             :server-items-length="totalRowCount"
-            class="elevation-1"
             :options.sync="options"
             :loading="tableLoading"
             loading-text="Now loading..."
             fixed-header
             height="50vh"
             :search="options.search"
+            show-current-page="false"
         >
             <template v-slot:item="{ item }">
                 <tr>
@@ -198,6 +199,7 @@
                                                         multiple
                                                     ></v-file-input>
                                                     <span
+                                                        v-if="getFileType( editedItem.name) === ''"
                                                         class="markdown-body">
                                                         <Editor
                                                             style="white-space: pre-wrap;"
@@ -291,6 +293,11 @@
     </v-card>
 </template>
 
+<style>
+    .fileTable .v-data-footer__pagination{
+        display: none;
+    }
+</style>
 <script>
 
 import { Editor } from "vuetify-markdown-editor";
@@ -351,6 +358,11 @@ export default {
         totalRowCount: 0,
         limit: 10,
         items: [],
+        cursor: '',
+        cursorList: [
+            '',
+        ],
+        hasMore: '',
         editedIndex: -1,
         editedItem: {
             fileMetadata: {},
@@ -424,6 +436,7 @@ export default {
                 if (response.data) {
                     this.editedItem = Object.assign(this.defaultItem, item)
                     this.editedItem.link = response.data.link
+                    this.editedItem.fileText = ''
                     if(this.getFileType(this.editedItem.name) === ''){
                         axios['get'](this.editedItem.link).then((response) => {
                             if (response.data) {
@@ -441,7 +454,8 @@ export default {
             let itemsPerPage = this.options.itemsPerPage ?? 10
             let sortBy = this.options.sortBy ?? ''
             let search = this.options.search ?? ''
-            let url = `${this.routes['api.files.index'].uri}?skip=${skip}&limit=${itemsPerPage}&sortBy=${sortBy}&search=${search}`
+            let cursor = this.cursorList[page-1] ?? ''
+            let url = `${this.routes['api.files.index'].uri}?skip=${skip}&limit=${itemsPerPage}&sortBy=${sortBy}&search=${search}&cursor=${cursor}`
             if(_page){
                 page = _page
             }
@@ -453,6 +467,8 @@ export default {
                 .then((response) => {
                     this.totalRowCount = response.data.data.totalRowCount
                     this.items = response.data.data.rows
+                    this.hasMore = response.data.data.hasMore
+                    this.cursorList[page] = response.data.data.cursor
                     this.tableLoading = false
                     this.setLast();
                 })

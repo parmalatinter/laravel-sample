@@ -31,9 +31,9 @@ class FileController extends AppBaseController
     {
         $cursor = $request->get('cursor')?? null;
         if($cursor){
-            $filesInfo = Dropbox::post('/list_folder/continue', ['cursor' => $cursor]);
+            $filesInfo = Dropbox::post('files/list_folder/continue', ['cursor' => $cursor]);
         }else{
-            $filesInfo = Dropbox::post('files/list_folder', ['path' =>'/test']);
+            $filesInfo = Dropbox::post('files/list_folder', ['path' =>'/test', 'limit' => 20]);
         }
 
         $pathList = [];
@@ -49,7 +49,7 @@ class FileController extends AppBaseController
 
         return $this->sendResponse([
             'rows' => $rows,
-            'totalRowCount' => $totalRowCount,
+            'totalRowCount' => $filesInfo['has_more'] ? 20 : 10,
             'hasMore' => $filesInfo['has_more'] ?? false,
             'cursor' => $filesInfo['cursor'] ?? '',
         ], 'Files retrieved successfully');
