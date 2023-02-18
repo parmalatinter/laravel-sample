@@ -29,11 +29,13 @@ class FileController extends AppBaseController
      */
     public function index(Request $request)
     {
+        $path = $request->get('path')?? '';
+        if($path) $path = "/{$path}";
         $cursor = $request->get('cursor')?? null;
         if($cursor){
             $filesInfo = Dropbox::post('files/list_folder/continue', ['cursor' => $cursor]);
         }else{
-            $filesInfo = Dropbox::post('files/list_folder', ['path' =>'/test', 'limit' => 20]);
+            $filesInfo = Dropbox::post('files/list_folder', ['path' => $path, 'limit' => 20]);
         }
 
         $pathList = [];

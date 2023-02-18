@@ -17,6 +17,11 @@
             height="50vh"
             :search="options.search"
             show-current-page="false"
+            :footer-props="{
+                'items-per-page-options': [10],
+                'show-current-page': true,
+                'show-first-last-page': true,
+            }"
         >
             <template v-slot:item="{ item }">
                 <tr>
@@ -33,22 +38,28 @@
                     </td>
                     <td>
                         <v-icon
-                            v-if="getFileType( item.name) === 'image'"
+                            v-if="getFileType( item.name, item['.tag']) === 'image'"
                             class="mr-2"
                         >
                             mdi-image
                         </v-icon>
                         <v-icon
-                            v-if="getFileType( item.name) === 'movie'"
+                            v-if="getFileType( item.name, item['.tag']) === 'movie'"
                             class="mr-2"
                         >
                             mdi-movie-play
                         </v-icon>
                         <v-icon
-                            v-if="getFileType( item.name) === ''"
+                            v-if="getFileType( item.name, item['.tag']) === ''"
                             class="mr-2"
                         >
                             mdi-file
+                        </v-icon>
+                        <v-icon
+                            v-if="getFileType( item.name, item['.tag']) === 'folder'"
+                            class="mr-2"
+                        >
+                            mdi-folder
                         </v-icon>
                     </td>
                     <td>
@@ -89,14 +100,27 @@
                 <v-toolbar
                     flat
                 >
-                    <v-toolbar-title>Files</v-toolbar-title>
+                    <v-toolbar-title>{{ path }}</v-toolbar-title>
                     <v-divider
                         class="mx-4"
                         inset
                         vertical
                     ></v-divider>
                     <v-spacer></v-spacer>
-
+                    <template>
+                        <div>
+                        <v-breadcrumbs :items="breadcrumbs">
+                            <template v-slot:item="{ item }">
+                                <v-breadcrumbs-item
+                                    :href="item.href"
+                                    :disabled="item.disabled"
+                                >
+                                    {{ item.title }}
+                                </v-breadcrumbs-item>
+                            </template>
+                        </v-breadcrumbs>
+                        </div>
+                    </template>
                     <!-- dialog edit, preview, create -->
                     <v-dialog
                         v-model="dialog"
@@ -297,6 +321,9 @@
     .fileTable .v-data-footer__pagination{
         display: none;
     }
+    .fileTable .v-data-footer__icons-before{
+        margin-left: auto;
+    }
 </style>
 <script>
 
@@ -310,6 +337,7 @@ export default {
     components: {
         Editor
     },
+    props: ["path"],
     data: () => ({
         routes : window.routes,
         csrfToken : window.csrfToken,
@@ -358,6 +386,13 @@ export default {
         totalRowCount: 0,
         limit: 10,
         items: [],
+        breadcrumbs: [
+            {
+                title: 'root',
+                disabled: false,
+                href: `/home#/files`,
+            }
+        ],
         cursor: '',
         cursorList: [
             '',
@@ -380,7 +415,7 @@ export default {
         },
         files: [],
         selectedFiles: [],
-        options: {search: ''},
+        options: {search: '', },
         tableLoading:true,
         loading: false,
         renderConfig: {
@@ -405,6 +440,18 @@ export default {
                     return 'Preview File'
             }
         },
+    },
+    mounted() {
+        console.log(this.$route.params)
+        for (let paramsKey in this.$route.params) {
+            let param = this.$route.params[paramsKey] ?? ''
+            let breadcrumbs = {
+                title: param,
+                disabled: false,
+                href: `/home#/files/${param}`,
+            };
+            this.breadcrumbs.push(breadcrumbs)
+        }
     },
     watch: {
         dialog (val) {
@@ -437,7 +484,7 @@ export default {
                     this.editedItem = Object.assign(this.defaultItem, item)
                     this.editedItem.link = response.data.link
                     this.editedItem.fileText = ''
-                    if(this.getFileType(this.editedItem.name) === ''){
+                    if(this.getFileType(this.editedItem.name, this.editedItem['.tag']) === ''){
                         axios['get'](this.editedItem.link).then((response) => {
                             if (response.data) {
                                 this.editedItem.fileText = response.data
@@ -455,7 +502,8 @@ export default {
             let sortBy = this.options.sortBy ?? ''
             let search = this.options.search ?? ''
             let cursor = this.cursorList[page-1] ?? ''
-            let url = `${this.routes['api.files.index'].uri}?skip=${skip}&limit=${itemsPerPage}&sortBy=${sortBy}&search=${search}&cursor=${cursor}`
+            let path = this.path ?? ''
+            let url = `${this.routes['api.files.index'].uri}?skip=${skip}&limit=${itemsPerPage}&sortBy=${sortBy}&search=${search}&cursor=${cursor}&path=${path}`
             if(_page){
                 page = _page
             }
@@ -471,6 +519,7 @@ export default {
                     this.cursorList[page] = response.data.data.cursor
                     this.tableLoading = false
                     this.setLast();
+                    console.log('response.data.data', response.data.data)
                 })
                 .catch((error) => {
                     console.log(error)
@@ -609,8 +658,9 @@ export default {
             return name.split('.').slice(-1)[0].toLowerCase();
 
         },
-        getFileType(name){
+        getFileType(name, tag ='file'){
             if(name === undefined) return '';
+            if(tag !== 'file') return tag;
             let extension = this.getFileExtension(name)
             let type = '';
 
