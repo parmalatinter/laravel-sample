@@ -58,6 +58,7 @@
                         <v-icon
                             v-if="getFileType( item.name, item['.tag']) === 'folder'"
                             class="mr-2"
+                            @click="moveNFolder(item.name)"
                         >
                             mdi-folder
                         </v-icon>
@@ -386,7 +387,8 @@ export default {
         totalRowCount: 0,
         limit: 10,
         items: [],
-        breadcrumbs: [
+        breadcrumbs: [],
+        breadcrumbsDefault: [
             {
                 title: 'root',
                 disabled: false,
@@ -443,15 +445,7 @@ export default {
     },
     mounted() {
         console.log(this.$route.params)
-        for (let paramsKey in this.$route.params) {
-            let param = this.$route.params[paramsKey] ?? ''
-            let breadcrumbs = {
-                title: param,
-                disabled: false,
-                href: `/home#/files/${param}`,
-            };
-            this.breadcrumbs.push(breadcrumbs)
-        }
+        this.breadcrumbs = this.breadcrumbsDefault.concat()
     },
     watch: {
         dialog (val) {
@@ -467,6 +461,22 @@ export default {
             },
             deep: true
         },
+        path: {
+            handler() {
+                this.breadcrumbs = this.breadcrumbsDefault.concat()
+                for (let paramsKey in this.$route.params) {
+                    let param = this.$route.params[paramsKey] ?? ''
+                    let breadcrumbs = {
+                        title: param,
+                        disabled: false,
+                        href: `/home#/files/${param}`,
+                    };
+                    this.breadcrumbs.push(breadcrumbs)
+                }
+                this.loadItems();
+            },
+            deep: true
+        }
     },
     created () {
         this.loadItems()
@@ -679,6 +689,9 @@ export default {
         },
         stringToDate(string){
             return moment(new Date(string)).local().format('YYYY-MM-DD');
+        },
+        moveNFolder: function (path) {
+            this.$router.push({path: `/files/${path}`})
         }
     },
 }
