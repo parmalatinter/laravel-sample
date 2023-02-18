@@ -56,6 +56,12 @@
                             mdi-file
                         </v-icon>
                         <v-icon
+                            v-if="getFileType( item.name, item['.tag']) === 'pdf'"
+                            class="mr-2"
+                        >
+                            mdi-file
+                        </v-icon>
+                        <v-icon
                             v-if="getFileType( item.name, item['.tag']) === 'folder'"
                             class="mr-2"
                             @click="moveNFolder(item.name)"
@@ -207,6 +213,11 @@
                                                             </v-row>
                                                         </template>
                                                     </v-img>
+                                                    <iframe
+                                                        v-if="getFileType(file.name) === 'pdf'"
+                                                        :src="getFileUrl(file)"
+                                                    >
+                                                    </iframe>
                                                 </v-col>
                                                 <v-col
                                                     class="d-flex child-flex"
@@ -260,6 +271,14 @@
                                                             </div>
                                                         </template>
                                                     </v-img>
+                                                    <iframe
+                                                        v-if="getFileType( editedItem.name) === 'pdf' && editedItem.link"
+                                                        :src="getPdfUrl(editedItem.link)"
+                                                        width="300"
+                                                        height="200"
+                                                        frameborder="0">
+                                                    </iframe>
+
                                                 </v-col>
                                             </v-row>
 
@@ -664,6 +683,9 @@ export default {
         setBase64Prefix(base64String){
             return `data:image/png;base64,${base64String}`
         },
+        getPdfUrl(url){
+            return `https://docs.google.com/gview?url=${url}&embedded=true`
+        },
         getFileExtension(name){
             return name.split('.').slice(-1)[0].toLowerCase();
 
@@ -681,6 +703,9 @@ export default {
                 case 'png':
                 case 'jpg':
                     type = 'image'
+                    break
+                case 'pdf':
+                    type = 'pdf'
                     break
                 default:
                     // nothing todo
