@@ -17,7 +17,7 @@ let routes=[
         component: require('../components/TableComponent').default
     },
     {
-        path: '/files/:path?',
+        path: '/files',
         props: true,
         component: require('../components/FilesComponent').default
     }

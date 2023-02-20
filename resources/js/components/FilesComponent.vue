@@ -220,7 +220,7 @@
                                                     </iframe>
                                                 </v-col>
                                                 <v-col
-                                                    class="d-flex child-flex"
+
                                                     cols="12"
                                                 >
                                                     <v-file-input
@@ -256,11 +256,9 @@
                                                         v-if="getFileType( editedItem.name) === 'image'"
                                                         v-show="editedItem.link"
                                                         :src="editedItem.link"
+                                                        max-height="125"
                                                         lazy-src="https://picsum.photos/id/11/100/60"
-                                                        height="300"
-                                                        max-width="500"
-                                                        aspect-ratio="1"
-                                                        class="grey lighten-2 mx-auto"
+                                                        class="grey lighten-2"
                                                     >
                                                         <template v-slot:placeholder>
                                                             <div class="d-flex align-center justify-center fill-height">
@@ -274,8 +272,7 @@
                                                     <iframe
                                                         v-if="getFileType( editedItem.name) === 'pdf' && editedItem.link"
                                                         :src="getPdfUrl(editedItem.link)"
-                                                        width="300"
-                                                        height="200"
+                                                        height="500"
                                                         frameborder="0">
                                                     </iframe>
 
@@ -357,7 +354,6 @@ export default {
     components: {
         Editor
     },
-    props: ["path"],
     data: () => ({
         routes : window.routes,
         csrfToken : window.csrfToken,
@@ -410,7 +406,7 @@ export default {
         breadcrumbsDefault: [
             {
                 title: 'root',
-                disabled: false,
+                disabled: true,
                 href: `/home#/files`,
             }
         ],
@@ -482,23 +478,19 @@ export default {
         },
         path: {
             handler() {
-                this.breadcrumbs = this.breadcrumbsDefault.concat()
-                for (let paramsKey in this.$route.params) {
-                    let param = this.$route.params[paramsKey] ?? ''
-                    let breadcrumbs = {
-                        title: param,
-                        disabled: false,
-                        href: `/home#/files/${param}`,
-                    };
-                    this.breadcrumbs.push(breadcrumbs)
-                }
-                this.loadItems();
+                this.setBreadcrumbs()
             },
             deep: true
+        },
+        $route (to, from) {
+            this.loadItems()
+            this.setBreadcrumbs()
         }
     },
     created () {
+        this.path = this.$route.query.path
         this.loadItems()
+        this.setBreadcrumbs()
     },
     methods: {
         initialize () {},
@@ -531,7 +523,7 @@ export default {
             let sortBy = this.options.sortBy ?? ''
             let search = this.options.search ?? ''
             let cursor = this.cursorList[page-1] ?? ''
-            let path = this.path ?? ''
+            let path = this.$route.query.path ?? ''
             let url = `${this.routes['api.files.index'].uri}?skip=${skip}&limit=${itemsPerPage}&sortBy=${sortBy}&search=${search}&cursor=${cursor}&path=${path}`
             if(_page){
                 page = _page
@@ -716,7 +708,29 @@ export default {
             return moment(new Date(string)).local().format('YYYY-MM-DD');
         },
         moveNFolder: function (path) {
-            this.$router.push({path: `/files/${path}`})
+            this.$router.replace({path: this.$route.path, query: { ...this.$route.query, path: path}})
+        },
+        setBreadcrumbs: function (){
+            this.breadcrumbs = this.breadcrumbsDefault.concat()
+            let pathList = [];
+            if(this.$route.query.path){
+                pathList = this.$route.query.path.split('/');
+            }
+
+            for (let paramsKey in pathList) {
+                let param = pathList[paramsKey] ?? ''
+                let breadcrumbs = {
+                    title: param,
+                    disabled: false,
+                    href: `/home#/files/${param}`,
+                };
+                this.breadcrumbs.push(breadcrumbs)
+            }
+
+            let first = this.breadcrumbs[0];
+            let last = this.breadcrumbs.slice(-1)[0];
+            first.disabled = false
+            last.disabled = true
         }
     },
 }
