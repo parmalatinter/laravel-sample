@@ -24,7 +24,8 @@
             }"
         >
             <template v-slot:item="{ item }">
-                <tr>
+                <tr
+                    @click="previewItem($event, item)">
                     <td>{{ item.name }}</td>
                     <td>
                         <v-img
@@ -83,7 +84,7 @@
                         <v-icon
                             small
                             class="mr-2"
-                            @click="previewItem(item)"
+                            @click="previewItem(null, item)"
                         >
                             mdi-eye
                         </v-icon>
@@ -168,13 +169,28 @@
                                                 :disabled="isDisableInput()"
                                             ></v-text-field>
                                             <v-row justify="center">
-
                                                 <v-col
                                                     v-if="mode === 'create'"
-                                                    v-for="(file, i) in files"
-                                                    :key="file"
                                                     class="d-flex child-flex"
                                                     cols="8"
+                                                >
+                                                    <v-file-input
+                                                        @change="selectFile"
+                                                        v-model="files"
+                                                        counter
+                                                        show-size
+                                                        small-chips
+                                                        truncate-length="24"
+                                                        label="Files"
+                                                        multiple
+                                                    ></v-file-input>
+                                                </v-col>
+                                                <v-col
+                                                    v-if="mode === 'create'"
+                                                    class="d-flex child-flex"
+                                                    cols="6"
+                                                    v-for="(file, i) in files"
+                                                    :key="file"
                                                 >
                                                     <span
                                                         v-if="getFileType(file.name) === ''"
@@ -188,7 +204,7 @@
                                                     </span>
                                                     <video
                                                         v-if="getFileType(file.name) === 'movie'"
-                                                        width="320"
+                                                        width="100%"
                                                         controls
                                                         :src="getFileUrl(file)">
                                                     </video>
@@ -220,20 +236,9 @@
                                                     </iframe>
                                                 </v-col>
                                                 <v-col
-
+                                                    v-if="mode === 'preview' || mode === 'edit'"
                                                     cols="12"
                                                 >
-                                                    <v-file-input
-                                                        v-if="mode === 'create'"
-                                                        @change="selectFile"
-                                                        v-model="files"
-                                                        counter
-                                                        show-size
-                                                        small-chips
-                                                        truncate-length="24"
-                                                        label="Files"
-                                                        multiple
-                                                    ></v-file-input>
                                                     <span
                                                         v-if="getFileType( editedItem.name) === ''"
                                                         class="markdown-body">
@@ -248,7 +253,7 @@
                                                     <video
                                                         v-if="getFileType( editedItem.name) === 'movie'"
                                                         v-show="editedItem.link"
-                                                        width="320"
+                                                        width="100%"
                                                         controls
                                                         :src="editedItem.link">
                                                     </video>
@@ -256,7 +261,8 @@
                                                         v-if="getFileType( editedItem.name) === 'image'"
                                                         v-show="editedItem.link"
                                                         :src="editedItem.link"
-                                                        max-height="125"
+                                                        contain
+                                                        aspect-ratio="1"
                                                         lazy-src="https://picsum.photos/id/11/100/60"
                                                         class="grey lighten-2"
                                                     >
@@ -462,6 +468,9 @@ export default {
                 this.$emit('change', search)
                 this.options.search = search
                 this.loadItems();
+            },
+            get() {
+                return this.options.search
             }
         }
     },
@@ -613,7 +622,8 @@ export default {
             this.files = []
             this.selectedFiles = []
         },
-        previewItem(item) {
+        previewItem(event, item) {
+            if(event && event.target.tagName === 'BUTTON') return;
             this.editedIndex = this.items.indexOf(item)
             this.editedItem = Object.assign({}, item)
             this.setFile(item)
