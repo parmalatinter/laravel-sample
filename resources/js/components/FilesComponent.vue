@@ -538,10 +538,14 @@ export default {
                             if (response.data) {
                                 this.editedItem.fileText = response.data
                             }
-                        })
+                        }).catch(function (error) {
+                            console.log('Error', error);
+                        });
                     }
                 }
-            })
+            }).catch(function (error) {
+                console.log('Error', error);
+            });
         },
         loadItems(_page = null) {
             this.tableLoading = true;
@@ -623,7 +627,9 @@ export default {
                 }
                 this.editedItem = {}
                 this.close()
-            })
+            }).catch(function (error) {
+                console.log('Error', error);
+            });
 
             console.log('todo file uploading', this.files)
         },
@@ -689,12 +695,15 @@ export default {
                             Authorization: "Bearer " + this.csrfToken,
                             "Content-Type": "application/json"
                         }
-                    }).then((response) => {
+                    }
+                ).then((response) => {
                     this.loadItems()
                     this.editedItem = this.defaultItem
                     this.editedIndex = -1
                     this.dialogDelete = false
-                })
+                }).catch(function (error) {
+                    console.log('Error', error);
+                });
             })
         },
         save() {
