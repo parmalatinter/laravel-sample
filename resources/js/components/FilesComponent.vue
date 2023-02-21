@@ -598,12 +598,12 @@ export default {
                 formData.append(`files[${index}]`, file)
             })
 
-            // airtable API needs the data to be placed in fields object
-            if (item.id) {
-                // if the item has an id, we're updating an existing item
-                method = this.routes['api.files.update'].methods[0]
-                url = this.routes['api.files.update'].uri.replace('{file}', item.id)
-            }
+            // // airtable API needs the data to be placed in fields object
+            // if (item.id) {
+            //     // if the item has an id, we're updating an existing item
+            //     method = this.routes['api.files.update'].methods[0]
+            //     url = this.routes['api.files.update'].uri.replace('{file}', item.id)
+            // }
 
             // save the record
             axios[method.toLowerCase()](url, formData,
