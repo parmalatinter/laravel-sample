@@ -65,14 +65,11 @@ class Handler extends ExceptionHandler
                 switch (true) {
                     case $e instanceof HttpExceptionInterface:
                         $message = $e->getMessage() ? : HttpResponse::$statusTexts[$e->getStatusCode()];
-                        Log::error($message);
 
                         return response()->json([
                             'message' => $message
                         ], $e->getStatusCode());
                     case $e instanceof ValidationException:
-                        Log::error($e->errors());
-
                         return $this->invalidJson($request, $e);
                     default:
                         return response()->json([
