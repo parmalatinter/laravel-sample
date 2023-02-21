@@ -27,9 +27,9 @@ Route::resource('items', App\Http\Controllers\API\ItemAPIController::class)
 Route::resource('blogs', App\Http\Controllers\API\BlogAPIController::class)
     ->except(['create', 'edit']);
 
-Route::post('files/link', [App\Http\Controllers\API\FileController::class, 'link'])->name('files.link');;
+Route::post('files/link', [App\Http\Controllers\API\FileApiController::class, 'link'])->name('files.link');;
 
-Route::post('files/delete', [App\Http\Controllers\API\FileController::class, 'destroy'])->name('files.delete');;
+Route::post('files/delete', [App\Http\Controllers\API\FileApiController::class, 'destroy'])->name('files.delete');;
 
-Route::resource('files', App\Http\Controllers\API\FileController::class)
+Route::resource('files', App\Http\Controllers\API\FileApiController::class)
     ->except(['show', 'create', 'edit', 'destroy']);

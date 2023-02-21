@@ -116,7 +116,7 @@
                 </v-toolbar>
                 <v-card-title>
                     <v-text-field
-                        v-model="options.search"
+                        v-model.lazy="options.search"
                         append-icon="mdi-magnify"
                         label="Search"
                         single-line

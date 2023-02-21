@@ -321,7 +321,7 @@
                 </v-toolbar>
                 <v-card-title>
                     <v-text-field
-                        v-model="options.search"
+                        :value="search" @change="value => search = value"
                         append-icon="mdi-magnify"
                         label="Search"
                         single-line
@@ -344,7 +344,7 @@
 </style>
 <script>
 
-import { Editor } from "vuetify-markdown-editor";
+import {Editor} from "vuetify-markdown-editor";
 import axios from "axios";
 import moment from "moment"
 
@@ -355,11 +355,11 @@ export default {
         Editor
     },
     data: () => ({
-        routes : window.routes,
-        csrfToken : window.csrfToken,
+        routes: window.routes,
+        csrfToken: window.csrfToken,
         dialog: false,
         dialogDelete: false,
-        mode : '',
+        mode: '',
         headers: [
             {
                 text: 'Name',
@@ -419,21 +419,21 @@ export default {
         editedItem: {
             fileMetadata: {},
             file: '',
-            link : '',
+            link: '',
             base64Thumbnail: '',
             fileText: '',
         },
         defaultItem: {
             fileMetadata: {},
             file: '',
-            link : '',
+            link: '',
             base64Thumbnail: '',
             fileText: '',
         },
         files: [],
         selectedFiles: [],
-        options: {search: '', },
-        tableLoading:true,
+        options: {search: '',},
+        tableLoading: true,
         loading: false,
         renderConfig: {
             // Mermaid config
@@ -447,8 +447,8 @@ export default {
         },
     }),
     computed: {
-        formTitle () {
-            switch (this.mode){
+        formTitle() {
+            switch (this.mode) {
                 case 'create':
                     return 'New File'
                 case 'edit':
@@ -457,17 +457,24 @@ export default {
                     return 'Preview File'
             }
         },
+        search: {
+            set(search) {
+                this.$emit('change', search)
+                this.options.search = search
+                this.loadItems();
+            }
+        }
     },
     mounted() {
         console.log(this.$route.params)
         this.breadcrumbs = this.breadcrumbsDefault.concat()
     },
     watch: {
-        dialog (val) {
-            if(!val) this.editedItem = Object.assign({}, this.defaultItem)
+        dialog(val) {
+            if (!val) this.editedItem = Object.assign({}, this.defaultItem)
             val || this.close()
         },
-        dialogDelete (val) {
+        dialogDelete(val) {
             val || this.close()
         },
         options: {
@@ -482,30 +489,31 @@ export default {
             },
             deep: true
         },
-        $route (to, from) {
+        $route(to, from) {
             this.loadItems()
             this.setBreadcrumbs()
         }
     },
-    created () {
+    created() {
         this.path = this.$route.query.path
         this.loadItems()
         this.setBreadcrumbs()
     },
     methods: {
-        initialize () {},
+        initialize() {
+        },
         setFile(item) {
             let url = this.routes['api.files.link'].uri
             let method = this.routes['api.files.link'].methods[0]
             axios[method.toLowerCase()](url,
                 item,
-                { headers: { Authorization: "Bearer " + this.csrfToken }}
+                {headers: {Authorization: "Bearer " + this.csrfToken}}
             ).then((response) => {
                 if (response.data) {
                     this.editedItem = Object.assign(this.defaultItem, item)
                     this.editedItem.link = response.data.link
                     this.editedItem.fileText = ''
-                    if(this.getFileType(this.editedItem.name, this.editedItem['.tag']) === ''){
+                    if (this.getFileType(this.editedItem.name, this.editedItem['.tag']) === '') {
                         axios['get'](this.editedItem.link).then((response) => {
                             if (response.data) {
                                 this.editedItem.fileText = response.data
@@ -516,22 +524,22 @@ export default {
             })
         },
         loadItems(_page = null) {
-            this.tableLoading= true;
+            this.tableLoading = true;
             this.items = []
             let page = this.options.page ?? 1
             let itemsPerPage = this.options.itemsPerPage ?? 10
             let sortBy = this.options.sortBy ?? ''
             let search = this.options.search ?? ''
-            let cursor = this.cursorList[page-1] ?? ''
+            let cursor = this.cursorList[page - 1] ?? ''
             let path = this.$route.query.path ?? ''
             let url = `${this.routes['api.files.index'].uri}?skip=${skip}&limit=${itemsPerPage}&sortBy=${sortBy}&search=${search}&cursor=${cursor}&path=${path}`
-            if(_page){
+            if (_page) {
                 page = _page
             }
-            const skip = (page-1) * itemsPerPage
+            const skip = (page - 1) * itemsPerPage
             axios.get(
                 url,
-                { headers: { Authorization: "Bearer " + this.csrfToken }}
+                {headers: {Authorization: "Bearer " + this.csrfToken}}
             )
                 .then((response) => {
                     this.totalRowCount = response.data.data.totalRowCount
@@ -546,8 +554,8 @@ export default {
                     console.log(error)
                 })
         },
-        isDisableInput () {
-            switch (this.mode){
+        isDisableInput() {
+            switch (this.mode) {
                 case 'create':
                 case 'edit':
                     return false
@@ -555,7 +563,7 @@ export default {
                     return true
             }
         },
-        setLast(){
+        setLast() {
             this.lastPage = Math.ceil(this.totalRowCount / this.options.itemsPerPage)
         },
         saveItem(item) {
@@ -566,7 +574,7 @@ export default {
             let url = this.routes['api.files.store'].uri
             const formData = new FormData()
 
-            this.selectedFiles.forEach((file,index) => {
+            this.selectedFiles.forEach((file, index) => {
                 formData.append(`files[${index}]`, file)
             })
 
@@ -579,7 +587,7 @@ export default {
 
             // save the record
             axios[method.toLowerCase()](url, formData,
-                { headers: { Authorization: "Bearer " + this.csrfToken }}
+                {headers: {Authorization: "Bearer " + this.csrfToken}}
             ).then((response) => {
                 if (response.data) {
                     // add new item to state
@@ -588,7 +596,7 @@ export default {
                         this.totalRowCount++;
                         this.setLast();
                         this.loadItems(this.lastPage)
-                    }else{
+                    } else {
                         this.loadItems()
                     }
 
@@ -599,52 +607,53 @@ export default {
 
             console.log('todo file uploading', this.files)
         },
-        createItem () {
+        createItem() {
             this.dialog = true
             this.mode = 'create'
             this.files = []
             this.selectedFiles = []
         },
-        previewItem (item) {
+        previewItem(item) {
             this.editedIndex = this.items.indexOf(item)
             this.editedItem = Object.assign({}, item)
             this.setFile(item)
             this.dialog = true
             this.mode = 'preview'
         },
-        editItem (item) {
+        editItem(item) {
             this.editedIndex = this.items.indexOf(item)
             this.editedItem = Object.assign({}, item)
             this.setFile(item)
             this.dialog = true
             this.mode = 'edit'
         },
-        deleteItem (item) {
+        deleteItem(item) {
             this.editedIndex = this.items.indexOf(item)
             this.editedItem = Object.assign({}, item)
             this.dialogDelete = true
             this.mode = 'delete'
         },
-        deleteItemConfirm () {
+        deleteItemConfirm() {
             this.closeDelete()
         },
-        getFileUrl(file){
-            if(file===null) return
+        getFileUrl(file) {
+            if (file === null) return
             return URL.createObjectURL(file)
         },
-        getFileText(file){
-            if(file===null) return
+        getFileText(file) {
+            if (file === null) return
             return URL.createObjectURL(file)
         },
-        close () {
+        close() {
             this.dialog = false
             this.dialogDelete = false
             this.editedItem = this.defaultItem
             this.editedIndex = -1
-            this.$nextTick(() => {})
+            this.$nextTick(() => {
+            })
             this.$emit('update:activated', false);
         },
-        closeDelete () {
+        closeDelete() {
             this.$nextTick(() => {
 
                 const method = this.routes['api.files.delete'].methods[0]
@@ -654,7 +663,8 @@ export default {
                 formData.append('path', this.editedItem.path_display)
 
                 axios[method.toLowerCase()](url, formData,
-                    { headers: {
+                    {
+                        headers: {
                             Authorization: "Bearer " + this.csrfToken,
                             "Content-Type": "application/json"
                         }
@@ -666,29 +676,29 @@ export default {
                 })
             })
         },
-        save () {
+        save() {
             this.saveItem(this.editedItem)
         },
         selectFile() {
             this.selectedFiles = event.target.files;
         },
-        setBase64Prefix(base64String){
+        setBase64Prefix(base64String) {
             return `data:image/png;base64,${base64String}`
         },
-        getPdfUrl(url){
+        getPdfUrl(url) {
             return `https://docs.google.com/gview?url=${url}&embedded=true`
         },
-        getFileExtension(name){
+        getFileExtension(name) {
             return name.split('.').slice(-1)[0].toLowerCase();
 
         },
-        getFileType(name, tag ='file'){
-            if(name === undefined) return '';
-            if(tag !== 'file') return tag;
+        getFileType(name, tag = 'file') {
+            if (name === undefined) return '';
+            if (tag !== 'file') return tag;
             let extension = this.getFileExtension(name)
             let type = '';
 
-            switch (extension){
+            switch (extension) {
                 case 'mov':
                     type = 'movie'
                     break
@@ -700,20 +710,20 @@ export default {
                     type = 'pdf'
                     break
                 default:
-                    // nothing todo
+                // nothing todo
             }
             return type
         },
-        stringToDate(string){
+        stringToDate(string) {
             return moment(new Date(string)).local().format('YYYY-MM-DD');
         },
         moveNFolder: function (path) {
-            this.$router.replace({path: this.$route.path, query: { ...this.$route.query, path: path}})
+            this.$router.replace({path: this.$route.path, query: {...this.$route.query, path: path}})
         },
-        setBreadcrumbs: function (){
+        setBreadcrumbs: function () {
             this.breadcrumbs = this.breadcrumbsDefault.concat()
             let pathList = [];
-            if(this.$route.query.path){
+            if (this.$route.query.path) {
                 pathList = this.$route.query.path.split('/');
             }
 
