@@ -149,6 +149,10 @@
                         <v-card>
                             <v-card-title>
                                 <span class="text-h5">{{ formTitle }}</span>
+                                <v-spacer></v-spacer>
+                                <v-btn icon @click="dialog = false" >
+                                    <v-icon>mdi-close</v-icon>
+                                </v-btn>
                             </v-card-title>
                             <v-card-text>
                                 <v-progress-linear
@@ -278,8 +282,8 @@
                                                     <iframe
                                                         v-if="getFileType( editedItem.name) === 'pdf' && editedItem.link"
                                                         :src="getPdfUrl(editedItem.link)"
-                                                        height="500"
-                                                        frameborder="0">
+                                                        frameborder="0"
+                                                        class="pdf">
                                                     </iframe>
 
                                                 </v-col>
@@ -346,6 +350,13 @@
     }
     .fileTable .v-data-footer__icons-before{
         margin-left: auto;
+    }
+    .fileTable table > tbody > tr{
+        cursor: pointer;
+    }
+    .pdf{
+        height: calc(65vh - 30px);
+        width: 100%;
     }
 </style>
 <script>
