@@ -531,7 +531,7 @@ export default {
             ).then((response) => {
                 if (response.data) {
                     this.editedItem = Object.assign(this.defaultItem, item)
-                    this.editedItem.link = response.data.link
+                    this.editedItem.link = response.data.data.link
                     this.editedItem.fileText = ''
                     if (this.getFileType(this.editedItem.name, this.editedItem['.tag']) === '') {
                         axios['get'](this.editedItem.link).then((response) => {

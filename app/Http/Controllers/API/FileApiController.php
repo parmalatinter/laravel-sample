@@ -34,28 +34,42 @@ class FileApiController extends AppBaseController
         if($path) $path = "/{$path}";
         $cursor = $request->get('cursor')?? null;
         $pathList = [];
+        $filesInfo = [];
         $key = 'entries';
-        if($search){
-            $filesInfo = Dropbox::post('files/search_v2', ['query' => $search]);
-            foreach ($filesInfo['matches'] as $match){
-                $pathList[] = $match['metadata']['metadata']['path_lower'];
-            }
-            $key = 'matches';
-        }elseif($cursor){
-            $filesInfo = Dropbox::post('files/list_folder/continue', ['cursor' => $cursor]);
-            foreach ($filesInfo['entries'] as $entry){
-                $pathList[] = $entry['path_lower'];
-            }
-        }else{
-            $filesInfo = Dropbox::post('files/list_folder', ['path' => $path, 'limit' => 20]);
-            foreach ($filesInfo['entries'] as $entry){
-                $pathList[] = $entry['path_lower'];
-            }
+        $type = 'list';
+        if($search) $type = 'search';
+        if($cursor) $type = 'list_continue';
+
+        switch ($type){
+            case 'search':
+                $key = 'matches';
+                $searchInfo = Dropbox::post('files/search_v2', ['query' => $search]);
+                $filesInfo = [
+                    $key => [],
+                    'has_more' => false,
+                    'cursor' => ''
+                ];
+                foreach ($searchInfo['matches'] as $match){
+                    $pathList[] = $match['metadata']['metadata']['path_lower'];
+                    $filesInfo[$key][] = $match['metadata']['metadata'];
+                }
+
+                break;
+            case 'list_continue':
+                $filesInfo = Dropbox::post('files/list_folder/continue', ['cursor' => $cursor]);
+                foreach ($filesInfo['entries'] as $entry){
+                    $pathList[] = $entry['path_lower'];
+                }
+                break;
+            case 'list':
+                $filesInfo = Dropbox::post('files/list_folder', ['path' => $path, 'limit' => 20]);
+                foreach ($filesInfo['entries'] as $entry){
+                    $pathList[] = $entry['path_lower'];
+                }
+                break;
         }
 
-
         $files = DropBoxCustom::getThumbnailBat($pathList, "jpeg", "w256h256");
-        $totalRowCount = 1;
         $rows = array_map(function ($index, $entry) use ($files){
                 return array_merge($entry,$files[$index]?? [] );
             }, array_keys($filesInfo[$key]), array_values($filesInfo[$key])
@@ -63,16 +77,21 @@ class FileApiController extends AppBaseController
 
         return $this->sendResponse([
             'rows' => $rows,
-            'totalRowCount' => $filesInfo['has_more'] ? 20 : 10,
+            'totalRowCount' => $filesInfo['has_more'] ? 40 : 20,
             'hasMore' => $filesInfo['has_more'] ?? false,
             'cursor' => $filesInfo['cursor'] ?? '',
         ], 'Files retrieved successfully');
     }
 
-    public function link(Request $request)
+    public function link(Request $request): JsonResponse
     {
-        $input = $request->all();
-        return Dropbox::post('files/get_temporary_link', ['path' => $input['path_display']]);
+        $pathDisplay = $request->get('path_display');
+        if(empty($pathDisplay)){
+            return $this->sendResponse([], 'Link is not found ');
+        }
+        $result = Dropbox::post('files/get_temporary_link', ['path' => $pathDisplay]);
+
+        return $this->sendResponse($result, 'Link retrieved successfully');
     }
 
     public function store(Request $request): JsonResponse
